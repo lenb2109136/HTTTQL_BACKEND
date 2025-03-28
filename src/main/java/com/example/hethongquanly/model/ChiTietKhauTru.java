@@ -5,11 +5,13 @@ import java.time.LocalDate;
 import com.example.hethongquanly.embeded.KhauTruId;
 
 import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
+@Entity
 @Table(name = "CHI_TIET_KHAU_TRU")
 public class ChiTietKhauTru {
 	@EmbeddedId
