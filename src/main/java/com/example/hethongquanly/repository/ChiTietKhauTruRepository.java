@@ -1,12 +1,11 @@
 package com.example.hethongquanly.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import com.example.hethongquanly.embeded.KhauTruId;
 import com.example.hethongquanly.model.ChiTietKhauTru;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-@Repository
-public interface ChiTietKhauTruRepository extends JpaRepository<ChiTietKhauTru, KhauTruId>{
+public interface ChiTietKhauTruRepository extends JpaRepository<ChiTietKhauTru, Integer> {
 
 }
