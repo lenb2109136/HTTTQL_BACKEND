@@ -1,6 +1,8 @@
 package com.example.hethongquanly.service;
 
 
+import com.example.hethongquanly.model.*;
+import com.example.hethongquanly.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,16 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.hethongquanly.embeded.HeSoId;
-import com.example.hethongquanly.model.ChiTietBacLuong;
-import com.example.hethongquanly.model.ChiTietKhauTru;
-import com.example.hethongquanly.model.HeSo;
-import com.example.hethongquanly.model.NhanVien;
-import com.example.hethongquanly.model.UngLuong;
-import com.example.hethongquanly.repository.ChhiTietBacLuongRepository;
-import com.example.hethongquanly.repository.ChiTietKhauTruRepository;
-import com.example.hethongquanly.repository.HeSoRepository;
-import com.example.hethongquanly.repository.NhanVienRepository;
-import com.example.hethongquanly.repository.UngLuongRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -42,7 +34,7 @@ public class NhanVienService {
 		@Autowired
 		private ChiTietKhauTruRepository chiTietKhauTruRepository;
 		@Autowired
-		private ChhiTietBacLuongRepository chhiTietBacLuongRepository;
+		private ChiTietBacLuongRepository chhiTietBacLuongRepository;
 		@Autowired
 		private HeSoRepository heSoRepository;
 
