@@ -1,10 +1,8 @@
 package com.example.hethongquanly.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name ="BAC_LUONG")
@@ -25,7 +23,7 @@ public class BacLuong {
 	public void setBAC_TEN(String bAC_TEN) {
 		BAC_TEN = bAC_TEN;
 	}
-	
-	
+
+
 }
 

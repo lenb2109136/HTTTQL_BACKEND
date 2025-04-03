@@ -14,7 +14,7 @@ public class KhauTru {
 	private int KT_ID ;
 	 private String  KT_DIENGIAI   ;
 	 private Float  KT_SOTIEN    ;
-	 private Float  KT_LOAITIENKHAUTRU  ;
+	 private String  KT_LOAITIENKHAUTRU  ;
 	public int getKT_ID() {
 		return KT_ID;
 	}
@@ -33,10 +33,10 @@ public class KhauTru {
 	public void setKT_SOTIEN(Float kT_SOTIEN) {
 		KT_SOTIEN = kT_SOTIEN;
 	}
-	public Float getKT_LOAITIENKHAUTRU() {
+	public String getKT_LOAITIENKHAUTRU() {
 		return KT_LOAITIENKHAUTRU;
 	}
-	public void setKT_LOAITIENKHAUTRU(Float kT_LOAITIENKHAUTRU) {
+	public void setKT_LOAITIENKHAUTRU(String kT_LOAITIENKHAUTRU) {
 		KT_LOAITIENKHAUTRU = kT_LOAITIENKHAUTRU;
 	}
 	 
