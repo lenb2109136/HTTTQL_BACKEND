@@ -27,6 +27,16 @@ public class ChiTietKhauTru {
 	@JoinColumn(name = "NV_ID")
 	private NhanVien nhanVien;
 	
+	private Float KT_PHIAPDUNG;
+	 
+	 
+	public Float getKT_PHIAPDUNG() {
+		return KT_PHIAPDUNG;
+	}
+	public void setKT_PHIAPDUNG(Float kT_PHIAPDUNG) {
+		KT_PHIAPDUNG = kT_PHIAPDUNG;
+	}
+	
 	private LocalDate CHI_TIET_KY_NGAYAPDUNG;
 
 	public KhauTruId getId() {

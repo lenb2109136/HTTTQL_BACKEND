@@ -15,6 +15,22 @@ public class KhauTru {
 	 private String  KT_DIENGIAI   ;
 	 private Float  KT_SOTIEN    ;
 	 private String  KT_LOAITIENKHAUTRU  ;
+	 private boolean KT_THUONGNIEN;
+	 private boolean KT_TUDONG;
+	 
+	 
+	public boolean isKT_TUDONG() {
+		return KT_TUDONG;
+	}
+	public void setKT_TUDONG(boolean kT_TUDONG) {
+		KT_TUDONG = kT_TUDONG;
+	}
+	public boolean isKT_THUONGNIEN() {
+		return KT_THUONGNIEN;
+	}
+	public void setKT_THUONGNIEN(boolean kT_THUONGNIEN) {
+		KT_THUONGNIEN = kT_THUONGNIEN;
+	}
 	public int getKT_ID() {
 		return KT_ID;
 	}
@@ -39,6 +55,7 @@ public class KhauTru {
 	public void setKT_LOAITIENKHAUTRU(String kT_LOAITIENKHAUTRU) {
 		KT_LOAITIENKHAUTRU = kT_LOAITIENKHAUTRU;
 	}
+	
 	 
 	 
 }
