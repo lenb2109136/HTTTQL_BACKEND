@@ -1,36 +1,37 @@
 package com.example.hethongquanly.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
 @Entity
-@Table(name = "PHONG_BAN")
+@Table(name = "phong_ban")
 public class PhongBan {
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int PB_ID;
-	
-	private String PB_TEN;
+    @Column(name = "PB_ID")
+    @JsonProperty("PB_ID") // Chỉ serialize thành "PB_ID"
+    private int PB_ID;
 
-	public int getPB_ID() {
-		return PB_ID;
-	}
+    @Column(name = "PB_TEN")
+    @JsonProperty("PB_TEN") // Chỉ serialize thành "PB_TEN"
+    private String PB_TEN;
 
-	public void setPB_ID(int pB_ID) {
-		PB_ID = pB_ID;
-	}
+    @Transient
+    @JsonProperty("soNhanSu") // Chỉ serialize thành "soNhanSu"
+    private long soNhanSu;
 
-	public String getPB_TEN() {
-		return PB_TEN;
-	}
+    // Getters và Setters
+    public int getPB_ID() { return PB_ID; }
+    public void setPB_ID(int PB_ID) { this.PB_ID = PB_ID; }
+    public String getPB_TEN() { return PB_TEN; }
+    public void setPB_TEN(String PB_TEN) { this.PB_TEN = PB_TEN; }
+    public long getSoNhanSu() { return soNhanSu; }
+    public void setSoNhanSu(long soNhanSu) { this.soNhanSu = soNhanSu; }
 
-	public void setPB_TEN(String pB_TEN) {
-		PB_TEN = pB_TEN;
-	}
-	
-	
+    @Override
+    public String toString() {
+        return "PhongBan{PB_ID=" + PB_ID + ", PB_TEN='" + PB_TEN + "', soNhanSu=" + soNhanSu + "}";
+    }
 }
