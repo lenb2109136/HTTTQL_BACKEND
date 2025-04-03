@@ -15,18 +15,18 @@ import jakarta.persistence.Table;
 public class UngLuong {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int   L_ID  ;
+	private int   UL_ID  ;
 	@ManyToOne
 	@JoinColumn(name = "NV_ID")
 	private NhanVien  NV_ID   ;
 	private LocalDateTime   UL_NGAYUL    ;
 	private Float   UL_TIEN      ;
-	private int   UL_TRANGTHAI     ;
+	private String   UL_TRANGTHAI     ;
 	public int getL_ID() {
-		return L_ID;
+		return UL_ID;
 	}
 	public void setL_ID(int l_ID) {
-		L_ID = l_ID;
+		UL_ID = l_ID;
 	}
 	public NhanVien getNV_ID() {
 		return NV_ID;
@@ -46,11 +46,18 @@ public class UngLuong {
 	public void setUL_TIEN(Float uL_TIEN) {
 		UL_TIEN = uL_TIEN;
 	}
-	public int getUL_TRANGTHAI() {
+	public int getUL_ID() {
+		return UL_ID;
+	}
+	public void setUL_ID(int uL_ID) {
+		UL_ID = uL_ID;
+	}
+	public String getUL_TRANGTHAI() {
 		return UL_TRANGTHAI;
 	}
-	public void setUL_TRANGTHAI(int uL_TRANGTHAI) {
+	public void setUL_TRANGTHAI(String uL_TRANGTHAI) {
 		UL_TRANGTHAI = uL_TRANGTHAI;
 	}
+	
 	
 }

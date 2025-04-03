@@ -21,12 +21,14 @@ public class HeSoId {
 		BAC_ID = bAC_ID;
 	}
 
-	public int getNV_ID() {
+	
+
+	public int getNGACH_ID() {
 		return NGACH_ID;
 	}
 
-	public void setNV_ID(int nV_ID) {
-		NGACH_ID = nV_ID;
+	public void setNGACH_ID(int nGACH_ID) {
+		NGACH_ID = nGACH_ID;
 	}
 
 	@Override
