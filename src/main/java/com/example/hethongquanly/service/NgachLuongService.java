@@ -1,57 +1,51 @@
 package com.example.hethongquanly.service;
 
+
 import com.example.hethongquanly.model.NgachLuong;
 import com.example.hethongquanly.repository.NgachLuongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class NgachLuongService {
+
     @Autowired
-    private NgachLuongRepository repository;
+    private NgachLuongRepository ngachLuongRepository;
 
-    public NgachLuongService(NgachLuongRepository ngachLuongRepository) {
-        this.repository = ngachLuongRepository;
+    public List<NgachLuong> getAllNgachLuong() {
+        return ngachLuongRepository.findAll();
     }
 
-    public List<NgachLuong> getDistinctNgachLuong() {
-        return repository.findDistinctNgachLuong();
-    }
-//    List<NgachLuong> danhSachNgachLuong = repository.findDistinctNgachLuong();
-
-
-    // Lấy tất cả danh sách
-    public List<NgachLuong> getAll() {
-        return repository.findAll();
+    public NgachLuong getNgachLuongById(Integer id) {
+        return ngachLuongRepository.findById(id).orElse(null);
     }
 
-    // Tìm theo ID
-    public Optional<NgachLuong> getById(int id) {
-        return repository.findById(id);
+    // Thêm mới ngạch lương với ngày tự động là ngày hiện tại
+    public NgachLuong createNgachLuong(NgachLuong ngachLuong) {
+        // Tự động set ngày hiện tại
+        ngachLuong.setNgayApDung(new Date());
+        return ngachLuongRepository.save(ngachLuong);
     }
 
-    // Thêm hoặc cập nhật
-    public NgachLuong save(NgachLuong ngachLuong) {
-        return repository.save(ngachLuong);
+    // Lấy tất cả ngạch lương không trùng tên (chỉ lấy bản ghi mới nhất)
+    public List<NgachLuong> getAllNgachLuongLatest() {
+        return ngachLuongRepository.findAllDistinctLatest();
     }
-
-    // Xóa theo ID
-    public void deleteById(int id) {
-        repository.deleteById(id);
-    }
-
-    // Câập nhật ngạch lương cơ sở theo id
-    public NgachLuong updateNgachLuongCoSo(int id, Float newLuongCoSo) {
-        Optional<NgachLuong> optionalNgachLuong = repository.findById(id);
-        if (optionalNgachLuong.isPresent()) {
-            NgachLuong ngachLuong = optionalNgachLuong.get();
-            ngachLuong.setNGACH_LUONGCOSO(newLuongCoSo);
-            return repository.save(ngachLuong);
-        } else {
-            throw new RuntimeException("Ngạch Lương không tồn tại với ID: " + id);
+    public NgachLuong updateNgachLuong(Integer id, NgachLuong ngachLuongDetails) {
+        NgachLuong ngachLuong = ngachLuongRepository.findById(id).orElse(null);
+        if (ngachLuong != null) {
+            ngachLuong.setLuongCoSo(ngachLuongDetails.getLuongCoSo());
+            ngachLuong.setTen(ngachLuongDetails.getTen());
+            ngachLuong.setNgayApDung(ngachLuongDetails.getNgayApDung());
+            return ngachLuongRepository.save(ngachLuong);
         }
+        return null;
+    }
+
+    public void deleteNgachLuong(Integer id) {
+        ngachLuongRepository.deleteById(id);
     }
 }

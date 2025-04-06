@@ -35,8 +35,6 @@ public class NhanVienService {
 		private ChiTietKhauTruRepository chiTietKhauTruRepository;
 		@Autowired
 		private ChiTietBacLuongRepository chhiTietBacLuongRepository;
-		@Autowired
-		private HeSoRepository heSoRepository;
 
 		@Autowired
 		private NhanVienRepository nhanVienRepository;

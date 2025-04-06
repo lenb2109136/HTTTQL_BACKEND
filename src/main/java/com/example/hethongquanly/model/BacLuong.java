@@ -1,29 +1,31 @@
 package com.example.hethongquanly.model;
 
-import jakarta.persistence.*;
+import java.util.Date;
 
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.Data;
+import java.util.Date;
 
 @Entity
-@Table(name ="BAC_LUONG")
+@Table(name = "bac_luong")
+@Data
 public class BacLuong {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int BAC_ID  ;
-	private String BAC_TEN ;
-	public int getBAC_ID() {
-		return BAC_ID;
-	}
-	public void setBAC_ID(int bAC_ID) {
-		BAC_ID = bAC_ID;
-	}
-	public String getBAC_TEN() {
-		return BAC_TEN;
-	}
-	public void setBAC_TEN(String bAC_TEN) {
-		BAC_TEN = bAC_TEN;
-	}
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "BAC_ID")
+	private Integer id;
 
+	@ManyToOne
+	@JoinColumn(name = "NGACH_ID", nullable = false)
+	private NgachLuong ngachLuong;
 
+	@Column(name = "BAC_TEN", nullable = false)
+	private String ten;
+
+	@Column(name = "B_HS", nullable = false)
+	private Float heSo;
+
+	@Column(name = "NGAY", nullable = false)
+	@Temporal(TemporalType.DATE)
+	private Date ngayApDung;
 }
-

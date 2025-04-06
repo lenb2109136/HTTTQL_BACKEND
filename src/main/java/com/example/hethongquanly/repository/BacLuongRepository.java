@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.example.hethongquanly.model.BacLuong;
 
 @Repository
-public interface BacLuongRepository extends JpaRepository<BacLuong, Integer>{
-
+public interface BacLuongRepository extends JpaRepository<BacLuong, Integer> {
 }

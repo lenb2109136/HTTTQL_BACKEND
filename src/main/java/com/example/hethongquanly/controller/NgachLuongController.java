@@ -5,67 +5,44 @@ import com.example.hethongquanly.service.NgachLuongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/ngachluong")
+@RequestMapping("/api/ngach-luong")
 public class NgachLuongController {
+
     @Autowired
-    private NgachLuongService service;
+    private NgachLuongService ngachLuongService;
 
-    // Lấy tất cả dữ liệu
     @GetMapping
-    public List<NgachLuong> getAll() {
-        return service.getAll();
+    public List<NgachLuong> getAllNgachLuong() {
+        return ngachLuongService.getAllNgachLuong();
     }
-    public NgachLuongController(NgachLuongService ngachLuongService) {
-        this.service = ngachLuongService;
-    }
-
-    @GetMapping("/distinct")
-    public List<NgachLuong> getDistinctNgachLuong() {
-        return service.getDistinctNgachLuong();
+    @GetMapping("/latest")
+    public List<NgachLuong> getAllNgachLuongLatest() {
+        return ngachLuongService.getAllNgachLuongLatest();
     }
 
-    // Lấy theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<NgachLuong> getById(@PathVariable int id) {
-        Optional<NgachLuong> result = service.getById(id);
-        return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<NgachLuong> getNgachLuongById(@PathVariable Integer id) {
+        NgachLuong ngachLuong = ngachLuongService.getNgachLuongById(id);
+        return ngachLuong != null ? ResponseEntity.ok(ngachLuong) : ResponseEntity.notFound().build();
     }
 
-    // Thêm mới hoặc cập nhật
     @PostMapping
-    public NgachLuong create(@RequestBody NgachLuong ngachLuong) {
-        return service.save(ngachLuong);
+    public NgachLuong createNgachLuong(@RequestBody NgachLuong ngachLuong) {
+        return ngachLuongService.createNgachLuong(ngachLuong);
     }
 
-    // Cập nhật theo ID
     @PutMapping("/{id}")
-    public ResponseEntity<NgachLuong> update(@PathVariable int id, @RequestBody NgachLuong newData) {
-        return service.getById(id).map(existing -> {
-            existing.setNGACH_LUONGCOSO(newData.getNGACH_LUONGCOSO());
-            existing.setNGACH_TEN(newData.getNGACH_TEN());
-            return ResponseEntity.ok(service.save(existing));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<NgachLuong> updateNgachLuong(@PathVariable Integer id, @RequestBody NgachLuong ngachLuong) {
+        NgachLuong updatedNgachLuong = ngachLuongService.updateNgachLuong(id, ngachLuong);
+        return updatedNgachLuong != null ? ResponseEntity.ok(updatedNgachLuong) : ResponseEntity.notFound().build();
     }
 
-    // Xóa theo ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
-        if (service.getById(id).isPresent()) {
-            service.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    // Cập nhật ngạch lương theo tên ngạch
-    @PutMapping("/{id}/luongcoso")
-    public ResponseEntity<NgachLuong> updateNgachLuongCoSo(@PathVariable int id, @RequestBody Float newLuongCoSo) {
-        NgachLuong updatedNgachLuong = service.updateNgachLuongCoSo(id, newLuongCoSo);
-        return ResponseEntity.ok(updatedNgachLuong);
+    public ResponseEntity<Void> deleteNgachLuong(@PathVariable Integer id) {
+        ngachLuongService.deleteNgachLuong(id);
+        return ResponseEntity.noContent().build();
     }
 }

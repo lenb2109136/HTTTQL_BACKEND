@@ -1,47 +1,34 @@
-package com.example.hethongquanly.service;
-
-import com.example.hethongquanly.model.BacLuong;
-import com.example.hethongquanly.repository.BacLuongRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
-
-@Service
-public class BacLuongService {
-    @Autowired
-    private BacLuongRepository bacLuongRepository;
-
-    // Lấy danh sách tất cả bậc lương
-    public List<BacLuong> getAllBacLuong() {
-        return bacLuongRepository.findAll();
-    }
-
-    // Lấy bậc lương theo ID
-    public Optional<BacLuong> getBacLuongById(int id) {
-        return bacLuongRepository.findById(id);
-    }
-
-    // Thêm bậc lương
-    public BacLuong createBacLuong(BacLuong bacLuong) {
-        return bacLuongRepository.save(bacLuong);
-    }
-
-    // Cập nhật tên bậc lương
-    public BacLuong updateBacLuong(int id, BacLuong updatedBacLuong) {
-        return bacLuongRepository.findById(id).map(bacLuong -> {
-            bacLuong.setBAC_TEN(updatedBacLuong.getBAC_TEN());
-            return bacLuongRepository.save(bacLuong);
-        }).orElse(null);
-    }
-
-    // Xóa bậc lương
-    public boolean deleteBacLuong(int id) {
-        if (bacLuongRepository.existsById(id)) {
-            bacLuongRepository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
-}
+//package com.example.hethongquanly.service;
+//
+//import com.example.hethongquanly.dto.BacLuongResponse;
+//import com.example.hethongquanly.model.BacLuong;
+//import com.example.hethongquanly.repository.BacLuongRepository;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Service;
+//import java.util.List;
+//import java.util.stream.Collectors;
+//
+//@Service
+//public class BacLuongService {
+//
+//    @Autowired
+//    private BacLuongRepository bacLuongRepository;
+//
+//    public List<BacLuongResponse> getAllBacLuong() {
+//        List<BacLuong> bacLuongs = bacLuongRepository.findAll();
+//
+//        return bacLuongs.stream()
+//                .map(this::convertToResponse)
+//                .collect(Collectors.toList());
+//    }
+//
+//    private BacLuongResponse convertToResponse(BacLuong bacLuong) {
+//        BacLuongResponse response = new BacLuongResponse();
+//        response.setId(bacLuong.getId());
+//        response.setNgachId(bacLuong.getNgachLuong().getId()); // Chỉ lấy ID
+//        response.setTen(bacLuong.getTen());
+//        response.setHeSo(bacLuong.getHeSo());
+//        response.setNgayApDung(bacLuong.getNgayApDung());
+//        return response;
+//    }
+//}
