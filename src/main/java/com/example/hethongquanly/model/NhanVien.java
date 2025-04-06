@@ -16,6 +16,7 @@ public class NhanVien {
     @JsonProperty("NV_ID")
     private int NV_ID;
 
+
     @ManyToOne
     @JoinColumn(name = "PB_ID")
     @JsonProperty("PB_ID")

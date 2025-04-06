@@ -74,10 +74,10 @@ public class KhauTruController {
 			nhanvien.forEach(nb->{
 				NhanVien nv= nhanVienRepository.findById((Integer)nb.get("nv_ID")).orElseThrow(()-> new EntityNotFoundException());
 				ChiTietKhauTru kk= new ChiTietKhauTru();
-				KhauTruId id= new KhauTruId();
-				id.setKT_ID(k.getKT_ID());
-				id.setNV_ID(nv.getNV_ID());
-				kk.setId(id);
+//				KhauTruId id= new KhauTruId();
+//				id.setKT_ID(k.getKT_ID());
+//				id.setNV_ID(nv.getNV_ID());
+//				kk.setId(id);
 				kk.setCHI_TIET_KY_NGAYAPDUNG(LocalDate.now());
 				kk.setKhauTru(k);
 				kk.setNhanVien(nv);

@@ -1,10 +1,13 @@
 package com.example.hethongquanly.model;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.Date;
+
 
 @Entity
 @Table(name = "bac_luong")
@@ -16,6 +19,7 @@ public class BacLuong {
 	private Integer id;
 
 	@ManyToOne
+//	@JsonIgnore // ngăn không hiện bên api
 	@JoinColumn(name = "NGACH_ID", nullable = false)
 	private NgachLuong ngachLuong;
 
@@ -25,7 +29,21 @@ public class BacLuong {
 	@Column(name = "B_HS", nullable = false)
 	private Float heSo;
 
+
 	@Column(name = "NGAY", nullable = false)
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date ngayApDung;
+
+
+
+	@PrePersist
+	protected void onCreate() {
+		if (this.ngayApDung == null) {
+			// Lấy ngày giờ hiện tại với múi giờ UTC+7
+			LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.of("+07:00"));
+			// Chuyển thành Date
+			this.ngayApDung = Date.from(localDateTime.atZone(ZoneOffset.of("+07:00")).toInstant());
+		}
+	}
+
 }

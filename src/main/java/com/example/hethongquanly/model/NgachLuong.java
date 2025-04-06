@@ -1,8 +1,12 @@
 package com.example.hethongquanly.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+
+
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "ngach_luong")
@@ -22,4 +26,9 @@ public class NgachLuong {
 	@Column(name = "NGAY", nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date ngayApDung;
+
+	@JsonIgnore
+    @OneToMany(mappedBy = "ngachLuong", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<BacLuong> bacLuongs;
+
 }

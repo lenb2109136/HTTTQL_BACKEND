@@ -1,47 +1,62 @@
-//package com.example.hethongquanly.controller;
-//
-//import com.example.hethongquanly.dto.BacLuongResponse;
-//import com.example.hethongquanly.model.BacLuong;
-//import com.example.hethongquanly.model.NgachLuong;
-//import com.example.hethongquanly.repository.BacLuongRepository;
-//import com.example.hethongquanly.repository.NgachLuongRepository;
-//import com.example.hethongquanly.service.BacLuongService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.Date;
-//import java.util.List;
-//
-//@RestController
-//@RequestMapping("/api/bac-luong")
-//public class BacLuongController {
-//
-//    @Autowired
-//    private BacLuongService bacLuongService;
-//    @Autowired
-//    private NgachLuongRepository ngachLuongRepository;
-//    @Autowired
-//    private BacLuongRepository bacLuongRepository;
-//
-//    @GetMapping
-//    public List<BacLuongResponse> getAllBacLuong() {
-//        return bacLuongService.getAllBacLuong();
-//    }
-//    @PostMapping
-//    public BacLuong themBacLuong(@RequestBody BacLuongResponse request) {
-//        // Kiểm tra ngạch lương tồn tại
-//        if (!ngachLuongRepository.existsById(request.getNgachId())) {
-//            throw new RuntimeException("Ngạch lương không tồn tại");
-//        }
-//
-//        // Tạo mới bậc lương
-//        BacLuong bacLuong = new BacLuong();
-//        bacLuong.setNgachLuong(new NgachLuong(request.getNgachId()));
-//        bacLuong.setTen(request.getTen());
-//        bacLuong.setHeSo(request.getHeSo());
-//        bacLuong.setNgayApDung(new Date()); // Luôn tự động set ngày hiện tại
-//
-//        return bacLuongRepository.save(bacLuong);
-//    }
-//}
+package com.example.hethongquanly.controller;
+
+
+import com.example.hethongquanly.model.BacLuong;
+import com.example.hethongquanly.service.BacLuongService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/bac-luong")
+public class BacLuongController {
+
+    @Autowired
+    private BacLuongService bacLuongService;
+
+    @GetMapping
+    public ResponseEntity<List<BacLuong>> getAllBacLuong() {
+        List<BacLuong> bacLuongList = bacLuongService.getAllBacLuong();
+        return ResponseEntity.ok(bacLuongList);
+    }
+
+    @PostMapping("/{ngachId}")
+    public ResponseEntity<Map<String, Object>> addBacLuong(@PathVariable Integer ngachId, @RequestBody BacLuong bacLuong) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // Thêm bậc lương (ngay sẽ tự động được đặt)
+            BacLuong savedBacLuong = bacLuongService.addBacLuong(ngachId, bacLuong);
+
+            response.put("message", "Thêm bậc lương thành công");
+            response.put("data", savedBacLuong);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+    @GetMapping("/latest")
+    public ResponseEntity<List<BacLuong>> getLatestBacLuongByNgachIdAndBacTen() {
+        List<BacLuong> latestBacLuongs = bacLuongService.getLatestBacLuongByNgachIdAndBacTen();
+        return ResponseEntity.ok(latestBacLuongs);
+    }
+
+    @GetMapping("/ngach/{ngachId}")
+    public ResponseEntity<List<BacLuong>> getBacLuongByNgachId(@PathVariable Integer ngachId) {
+        List<BacLuong> bacLuongs = bacLuongService.getBacLuongByNgachId(ngachId);
+        if (bacLuongs == null || bacLuongs.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(bacLuongs);
+    }
+    @GetMapping("/ngach/{ngachId}/latest")
+    public ResponseEntity<List<BacLuong>> getBacLuongByNgach(@PathVariable Integer ngachId) {
+        List<BacLuong> result = bacLuongService.getLatestBacLuongByNgachId(ngachId);
+        return ResponseEntity.ok(result);
+    }
+}
+

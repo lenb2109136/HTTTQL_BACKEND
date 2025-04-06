@@ -50,7 +50,8 @@ public class NhanVienService {
 			Map<Object, Object> map= new HashMap<Object, Object>();
 			List<UngLuong> ul= ungLuongRepository.getUngLuong(idnv, nbd, nkt);
 			List<ChiTietKhauTru> ctkt=chiTietKhauTruRepository.getChiTietKhauTru(idnv, nbd, nkt);
-			List<ChiTietBacLuong> ctbl= chhiTietBacLuongRepository.getChiTietBacLuong(idnv, nbd, nkt);
+			// Cần ní lên fix lại getChiTietBacLuong
+//			List<ChiTietBacLuong> ctbl= chhiTietBacLuongRepository.getChiTietBacLuong(idnv, nbd, nkt);
 			Float tongungluong=ul.stream().map((u)-> u.getUL_TIEN()).reduce(0f,Float::sum);
 			Float tongkhautru=ctkt.stream().map((u)-> u.getKhauTru().getKT_SOTIEN()).reduce(0f,Float::sum);
 			map.put("luongcoban",20000);
