@@ -91,5 +91,12 @@ public class KhauTruController {
 		}
 		
 	}
+	
+	@PostMapping("/update")
+	public ResponseEntity<Response> update(@RequestBody KhauTru khauTru){
+		khauTruRepository.save(khauTru);
+		return new ResponseEntity<Response>(new Response(HttpStatus.OK, "Tạo khấu trừ thành công",null), HttpStatus.OK);
+		
+	}
 
 }

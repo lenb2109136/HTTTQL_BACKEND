@@ -14,4 +14,5 @@ import com.example.hethongquanly.embeded.ChiTietBacLuong;
 public interface ChhiTietBacLuongRepository extends JpaRepository<com.example.hethongquanly.model.ChiTietBacLuong, ChiTietBacLuong>{
 	@Query(value = "SELECT * FROM chi_tiet_bac_luong WHERE NV_ID=:nvid AND NGAYAPDUNG>=:nbd AND NGAYAPDUNG<=:nkt",nativeQuery = true)
 	public List<com.example.hethongquanly.model.ChiTietBacLuong> getChiTietBacLuong(@RequestParam("nvid") int nvid, @RequestParam("nbd") LocalDate nbd, @RequestParam("nkt") LocalDate nkt);
+
 }

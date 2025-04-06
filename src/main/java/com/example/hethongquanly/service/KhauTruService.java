@@ -49,4 +49,9 @@ public class KhauTruService {
 			}
 		});
 	}
+	
+//	@Scheduled(cron = "0/10 * * * * ?")
+//	public void sys() {
+//		System.out.println("có sự kiện xảy ra");
+//	}
 }
