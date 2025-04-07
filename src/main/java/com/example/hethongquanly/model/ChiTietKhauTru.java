@@ -4,8 +4,12 @@ import java.time.LocalDate;
 
 import com.example.hethongquanly.embeded.KhauTruId;
 
+import jakarta.annotation.Generated;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
@@ -14,16 +18,15 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "CHI_TIET_KHAU_TRU")
 public class ChiTietKhauTru {
-	@EmbeddedId
-	private KhauTruId id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int ID;
 	
 	@ManyToOne
-	@MapsId("KT_ID")
 	@JoinColumn(name = "KT_ID")
 	private KhauTru khauTru;
 	
 	@ManyToOne
-	@MapsId("NV_ID")
 	@JoinColumn(name = "NV_ID")
 	private NhanVien nhanVien;
 	
@@ -39,14 +42,14 @@ public class ChiTietKhauTru {
 	
 	private LocalDate CHI_TIET_KY_NGAYAPDUNG;
 
-	public KhauTruId getId() {
-		return id;
-	}
+	
 
-	public void setId(KhauTruId id) {
-		this.id = id;
+	public int getID() {
+		return ID;
 	}
-
+	public void setID(int iD) {
+		ID = iD;
+	}
 	public KhauTru getKhauTru() {
 		return khauTru;
 	}
