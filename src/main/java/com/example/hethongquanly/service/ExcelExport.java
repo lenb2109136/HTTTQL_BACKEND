@@ -37,7 +37,7 @@ public class ExcelExport {
                 // Ghi dữ liệu vào Excel, kiểm tra null tránh lỗi
                 row.createCell(0).setCellValue(rowNum); 
                 row.createCell(1).setCellValue(hoTen);
-                row.createCell(2).setCellValue(getDoubleValue(item.get("luongcoban"))); 
+                row.createCell(2).setCellValue(getDoubleValue(item.get("luongcoban")));
                 row.createCell(3).setCellValue(getDoubleValue(item.get("luongtangca"))); 
                 row.createCell(4).setCellValue(getDoubleValue(item.get("tongkhautru"))); 
                 row.createCell(5).setCellValue(getDoubleValue(item.get("tongthunhap"))); 

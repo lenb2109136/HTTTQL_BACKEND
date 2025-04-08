@@ -10,6 +10,9 @@ import java.util.Properties;
 
 import javax.mail.Session;
 
+import com.example.hethongquanly.model.NhanVien;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +72,7 @@ public class ExportPDF {
             table.addCell(createCell((String) nv.getNV_SDT(), customFont));
             table.addCell(createCell("Giới tính", customFont));
 //            table.addCell(createCell((nv.getNV_GIOITINH() ? "Nam" : "Nữ", customFont));
+//            table.addCell(createCell((nv.getNV_GIOITINH()==1 ? "Nam" : "Nữ", customFont)));
             table.addCell(createCell("Email", customFont));
             table.addCell(createCell((String) nv.getNV_EMAIL(), customFont));
 
@@ -153,8 +157,8 @@ public class ExportPDF {
         cell.setBorder(PdfPCell.BOX);
         return cell;
     }
-    
 
 
-   
+
+
 }

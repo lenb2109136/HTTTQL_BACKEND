@@ -22,6 +22,9 @@ public class PhongBanController {
     @Autowired
     private PhongBanRepository phongBanRepository;
 
+    @Autowired
+    private PhongBanRepository phongBanRepository;
+
     @GetMapping
     public ResponseEntity<?> getAllPhongBan() {
         try {
@@ -86,7 +89,10 @@ public class PhongBanController {
                 .body("Lỗi server: " + e.getMessage());
         }
     }
-
+    @GetMapping("/getPhongBan")
+    public  ResponseEntity<Response> getPhongBan(){
+        return new ResponseEntity<Response>(new Response(HttpStatus.OK,"",phongBanRepository.findAll()),HttpStatus.OK);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePhongBan(@PathVariable int id) {
         try {
