@@ -22,8 +22,8 @@ public class PhongBanController {
     @Autowired
     private PhongBanRepository phongBanRepository;
 
-    @Autowired
-    private PhongBanRepository phongBanRepository;
+
+//    private PhongBanRepository phongBanRepository;
 
     @GetMapping
     public ResponseEntity<?> getAllPhongBan() {
@@ -37,10 +37,10 @@ public class PhongBanController {
         }
     }
     
-    @GetMapping("/getPhongBan")
-    public  ResponseEntity<Response> getPhongBan(){
-        return new ResponseEntity<Response>(new Response(HttpStatus.OK,"",phongBanRepository.findAll()),HttpStatus.OK);
-    }
+//    @GetMapping("/getPhongBan")
+//    public  ResponseEntity<Response> getPhongBan(){
+//        return new ResponseEntity<Response>(new Response(HttpStatus.OK,"",phongBanRepository.findAll()),HttpStatus.OK);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPhongBanById(@PathVariable int id) {

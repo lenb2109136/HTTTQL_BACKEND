@@ -44,7 +44,7 @@ public class NhanVienService {
 		private NhanVienRepository nhanVienRepository;
 		
 		@Autowired
-		private ChiTietBacLuongService chiTietBacLuongService;
+//		private ChiTietBacLuongService chiTietBacLuongService;
 
 
 //		public Map<Object, Object> TinhLuong(int idnv, LocalDate nbd, LocalDate nkt) {
