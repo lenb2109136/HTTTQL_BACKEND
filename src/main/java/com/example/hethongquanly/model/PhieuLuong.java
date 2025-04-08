@@ -1,62 +1,54 @@
 package com.example.hethongquanly.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
-@Table(name = "PHIEU_LUONG")
+@Table(name = "phieu_luong")
 public class PhieuLuong {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PL_ID")
-    @JsonProperty("id")
-    private int PL_ID;
+    private int id;
 
     @ManyToOne
-    @JoinColumn(name = "NV_ID")
-    @JsonProperty("nvId")
+    @JoinColumn(name = "NV_ID", nullable = false)
     private NhanVien nvId;
 
     @Column(name = "PL_NGAY")
-    @JsonProperty("ngayPhat")
-    private LocalDate PL_NGAY;
+    private Date ngayPhat;
 
     @Column(name = "PL_LUONGCOBAN")
-    @JsonProperty("luongCoBan")
-    private Float PL_LUONGCOBAN;
+    private double luongCoBan;
 
     @Column(name = "PL_LUONGTANGCA")
-    @JsonProperty("luongTangCa")
-    private Float PL_LUONGTANGCA;
+    private double luongTangCa;
 
     @Column(name = "PL_TONGTHUNHAP")
-    @JsonProperty("tongThuNhap")
-    private Float PL_TONGTHUNHAP;
+    private double tongThuNhap;
 
     @Column(name = "PL_TONGKHAUTRU")
-    @JsonProperty("tongKhauTru")
-    private Float PL_TONGKHAUTRU;
+    private double tongKhauTru;
 
     @Column(name = "PL_UNGLUONG")
-    @JsonProperty("ungLuong")
-    private Float PL_UNGLUONG;
+    private double ungLuong;
 
     @Column(name = "PL_LUONGNHAN")
-    @JsonProperty("luongNhan")
-    private Float PL_LUONGNHAN;
+    private double luongNhan;
 
     @Column(name = "PL_NO")
-    @JsonProperty("no")
-    private Float PL_NO;
+    private double no;
+
+    @Column(name = "PL_TRANGTHAI")
+    private String trangThai;
 
     // Getters và Setters
-    public int getPL_ID() {
-        return PL_ID;
+    public int getId() {
+        return id;
     }
 
-    public void setPL_ID(int PL_ID) {
-        this.PL_ID = PL_ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public NhanVien getNvId() {
@@ -67,67 +59,75 @@ public class PhieuLuong {
         this.nvId = nvId;
     }
 
-    public LocalDate getPL_NGAY() {
-        return PL_NGAY;
+    public Date getNgayPhat() {
+        return ngayPhat;
     }
 
-    public void setPL_NGAY(LocalDate PL_NGAY) {
-        this.PL_NGAY = PL_NGAY;
+    public void setNgayPhat(Date ngayPhat) {
+        this.ngayPhat = ngayPhat;
     }
 
-    public Float getPL_LUONGCOBAN() {
-        return PL_LUONGCOBAN;
+    public double getLuongCoBan() {
+        return luongCoBan;
     }
 
-    public void setPL_LUONGCOBAN(Float PL_LUONGCOBAN) {
-        this.PL_LUONGCOBAN = PL_LUONGCOBAN;
+    public void setLuongCoBan(double luongCoBan) {
+        this.luongCoBan = luongCoBan;
     }
 
-    public Float getPL_LUONGTANGCA() {
-        return PL_LUONGTANGCA;
+    public double getLuongTangCa() {
+        return luongTangCa;
     }
 
-    public void setPL_LUONGTANGCA(Float PL_LUONGTANGCA) {
-        this.PL_LUONGTANGCA = PL_LUONGTANGCA;
+    public void setLuongTangCa(double luongTangCa) {
+        this.luongTangCa = luongTangCa;
     }
 
-    public Float getPL_TONGTHUNHAP() {
-        return PL_TONGTHUNHAP;
+    public double getTongThuNhap() {
+        return tongThuNhap;
     }
 
-    public void setPL_TONGTHUNHAP(Float PL_TONGTHUNHAP) {
-        this.PL_TONGTHUNHAP = PL_TONGTHUNHAP;
+    public void setTongThuNhap(double tongThuNhap) {
+        this.tongThuNhap = tongThuNhap;
     }
 
-    public Float getPL_TONGKHAUTRU() {
-        return PL_TONGKHAUTRU;
+    public double getTongKhauTru() {
+        return tongKhauTru;
     }
 
-    public void setPL_TONGKHAUTRU(Float PL_TONGKHAUTRU) {
-        this.PL_TONGKHAUTRU = PL_TONGKHAUTRU;
+    public void setTongKhauTru(double tongKhauTru) {
+        this.tongKhauTru = tongKhauTru;
     }
 
-    public Float getPL_UNGLUONG() {
-        return PL_UNGLUONG;
+    public double getUngLuong() {
+        return ungLuong;
     }
 
-    public void setPL_UNGLUONG(Float PL_UNGLUONG) {
-        this.PL_UNGLUONG = PL_UNGLUONG;
+    public void setUngLuong(double ungLuong) {
+        this.ungLuong = ungLuong;
     }
 
-    public Float getPL_LUONGNHAN() {
-        return PL_LUONGNHAN;
+    public double getLuongNhan() {
+        return luongNhan;
     }
 
-    public void setPL_LUONGNHAN(Float PL_LUONGNHAN) {
-        this.PL_LUONGNHAN = PL_LUONGNHAN;
+    public void setLuongNhan(double luongNhan) {
+        this.luongNhan = luongNhan;
     }
 
-    public Float getPL_NO() {
-        return PL_NO;
+    public double getNo() {
+        return no;
     }
 
-    public void setPL_NO(Float PL_NO) {
-        this.PL_NO = PL_NO;
+    public void setNo(double no) {
+        this.no = no;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
 }
