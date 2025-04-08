@@ -36,6 +36,7 @@ public class NgachLuongController {
 
     @PostMapping
     public NgachLuong createNgachLuong(@RequestBody NgachLuong ngachLuong) {
+        ngachLuong.setId(null);
         return ngachLuongService.createNgachLuong(ngachLuong);
     }
 
