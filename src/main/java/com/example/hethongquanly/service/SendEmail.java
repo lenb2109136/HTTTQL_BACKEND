@@ -13,8 +13,9 @@ import java.util.Properties;
 public class SendEmail {
 
 	public boolean taomail(String email, String tieude, String noidung, byte[] pdfData) {
+		System.out.println("email người nhận là "+email+"=====================================================");
 	    final String username = "ntngon1230@gmail.com";
-	    final String password = "bpzfoypzqyzcbkor"; 
+	    final String password = "hnrz boov jqmu wqcj"; 
 
 	    Properties properties = new Properties();
 	    properties.put("mail.smtp.auth", "true");

@@ -1,6 +1,7 @@
 package com.example.hethongquanly.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -60,6 +62,13 @@ public class KhauTruController {
 		return new ResponseEntity<Response>(new Response(HttpStatus.OK, "Tạo khấu trừ thành công", null),
 				HttpStatus.OK);
 	}
+	
+	@PostMapping("/update")
+	public ResponseEntity<Response> Update(@RequestBody KhauTru khauTru) {
+		khauTruRepository.save(khauTru);
+		return new ResponseEntity<Response>(new Response(HttpStatus.OK, "Tạo khấu trừ thành công", null),
+				HttpStatus.OK);
+	}
 
 	@PostMapping("thietlapkhautru")
 	public ResponseEntity<Response> thietlapkhautru(@RequestBody String requestBody) {
@@ -72,12 +81,8 @@ public class KhauTruController {
 			Map<Object, Object> me = (Map<Object, Object>) dataMap.get("khautru");
 			KhauTru k= khauTruRepository.findById((Integer)me.get("kt_ID")).orElseThrow(()-> new EntityNotFoundException());
 			nhanvien.forEach(nb->{
-				NhanVien nv= nhanVienRepository.findById((Integer)nb.get("nv_ID")).orElseThrow(()-> new EntityNotFoundException());
+				NhanVien nv= nhanVienRepository.findById((Integer)nb.get("NV_ID")).orElseThrow(()-> new EntityNotFoundException());
 				ChiTietKhauTru kk= new ChiTietKhauTru();
-//				KhauTruId id= new KhauTruId();
-//				id.setKT_ID(k.getKT_ID());
-//				id.setNV_ID(nv.getNV_ID());
-//				kk.setId(id);
 				kk.setCHI_TIET_KY_NGAYAPDUNG(LocalDate.now());
 				kk.setKhauTru(k);
 				kk.setNhanVien(nv);
@@ -89,6 +94,18 @@ public class KhauTruController {
 			e.printStackTrace();
 			return new ResponseEntity<Response>(new Response(HttpStatus.OK, "Tạo khấu trừ thành công",null), HttpStatus.BAD_REQUEST);
 		}
+		
+	}
+	@GetMapping("/thongke")
+	public ResponseEntity<Response> update(@RequestParam("nbd") LocalDateTime nbd,@RequestParam("nkt") LocalDateTime nkt){
+		
+		return new ResponseEntity<Response>(new Response(HttpStatus.OK, "Tạo khấu trừ thành công",khauTruRepository.getThongKe(nbd,nkt)), HttpStatus.OK);
+		
+	}
+	@GetMapping("/thongkenot")
+	public ResponseEntity<Response> updatenot(@RequestParam("nbd") LocalDateTime nbd,@RequestParam("nkt") LocalDateTime nkt){
+		
+		return new ResponseEntity<Response>(new Response(HttpStatus.OK, "Tạo khấu trừ thành công",khauTruRepository.getThongKenotthuongnien(nbd,nkt)), HttpStatus.OK);
 		
 	}
 

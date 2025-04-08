@@ -1,6 +1,8 @@
 package com.example.hethongquanly.controller;
 
 import com.example.hethongquanly.model.PhongBan;
+import com.example.hethongquanly.model.Response;
+import com.example.hethongquanly.repository.PhongBanRepository;
 import com.example.hethongquanly.service.PhongBanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,9 @@ public class PhongBanController {
 
     @Autowired
     private PhongBanService phongBanService;
+    
+    @Autowired
+    private PhongBanRepository phongBanRepository;
 
     @GetMapping
     public ResponseEntity<?> getAllPhongBan() {
@@ -27,6 +32,11 @@ public class PhongBanController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Lỗi khi lấy danh sách phòng ban: " + e.getMessage());
         }
+    }
+    
+    @GetMapping("/getPhongBan")
+    public  ResponseEntity<Response> getPhongBan(){
+        return new ResponseEntity<Response>(new Response(HttpStatus.OK,"",phongBanRepository.findAll()),HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

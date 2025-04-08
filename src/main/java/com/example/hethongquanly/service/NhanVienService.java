@@ -38,6 +38,9 @@ public class NhanVienService {
 
 		@Autowired
 		private NhanVienRepository nhanVienRepository;
+		
+		@Autowired
+		private ChiTietBacLuongService chiTietBacLuongService;
 
 		public static long getNumberOfDays(LocalDate startDate, LocalDate endDate) {
 	        return ChronoUnit.DAYS.between(startDate, endDate) + 1;
@@ -47,30 +50,32 @@ public class NhanVienService {
 		    return values[ThreadLocalRandom.current().nextInt(values.length)];
 		}
 		public Map<Object, Object> TinhLuong(int idnv, LocalDate nbd, LocalDate nkt) {
-			Map<Object, Object> map= new HashMap<Object, Object>();
-			List<UngLuong> ul= ungLuongRepository.getUngLuong(idnv, nbd, nkt);
-			List<ChiTietKhauTru> ctkt=chiTietKhauTruRepository.getChiTietKhauTru(idnv, nbd, nkt);
-			// Cần ní lên fix lại getChiTietBacLuong
-//			List<ChiTietBacLuong> ctbl= chhiTietBacLuongRepository.getChiTietBacLuong(idnv, nbd, nkt);
+			long songay = ChronoUnit.DAYS.between(nbd, nkt) + 1;
+				Map<Object, Object> map= new HashMap<Object, Object>();
+				List<UngLuong> ul= ungLuongRepository.getUngLuong(idnv, nbd, nkt);
+				List<ChiTietKhauTru> ctkt=chiTietKhauTruRepository.getChiTietKhauTru(idnv, nbd, nkt);
+			ChiTietBacLuong latest = chiTietBacLuongService.findLatestByNhanVienId(idnv);
 			Float tongungluong=ul.stream().map((u)-> u.getUL_TIEN()).reduce(0f,Float::sum);
+			Float luongcoban=latest.getBAC_ID().getHeSo()* latest.getBAC_ID().getNgachLuong().getLuongCoSo();
+			luongcoban=(float)(luongcoban/26)*songay;
 			Float tongkhautru=ctkt.stream().map((u)-> u.getKhauTru().getKT_SOTIEN()).reduce(0f,Float::sum);
-			map.put("luongcoban",20000);
+			map.put("luongcoban",luongcoban);
 			map.put("luongtangca", getRandomTangCa());
-			map.put("tongthunhap", getRandomTangCa());
+			map.put("tongthunhap", getRandomTangCa()+luongcoban);
 			map.put("tongungluong", tongungluong);
 			map.put("tongkhautru", tongkhautru);
-			map.put("luongnhan", tongkhautru);
-			map.put("danhsachkhautru", ctkt.stream().map((d)->{
-				Map<Object, Object> khautru=new HashMap<Object, Object>();
-				khautru.put("khautru", d.getKhauTru());
-				khautru.put("tienung", d.getCHI_TIET_KY_NGAYAPDUNG());
-				return khautru;
-			}));
-			map.put("danhsachbacluong",null);
-			map.put("danhsachungluong",ul);
-			map.put("luongnhan",3000);
-			return map;
-		}
+
+				map.put("danhsachkhautru", ctkt.stream().map((d)->{
+					Map<Object, Object> khautru=new HashMap<Object, Object>();
+					khautru.put("khautru", d.getKhauTru());
+					khautru.put("tienung", d.getCHI_TIET_KY_NGAYAPDUNG());
+					return khautru;
+				}));
+				map.put("danhsachbacluong",null);
+				map.put("danhsachungluong",ul);
+				map.put("luongnhan",getRandomTangCa()+luongcoban-tongkhautru-tongungluong);
+				return map;
+			}
 
 
 		public List<NhanVien> filterNhanVien(int idPhongBan){
@@ -196,5 +201,15 @@ public class NhanVienService {
         NhanVien nhanVien = nhanVienRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Nhân viên không tồn tại với ID: " + id));
         nhanVienRepository.delete(nhanVien);
+    }
+    
+    
+    
+    
+    
+    
+    // MỚI BỔ SUNG THÊM
+    public void getHeSoLuong() {
+    	
     }
 }

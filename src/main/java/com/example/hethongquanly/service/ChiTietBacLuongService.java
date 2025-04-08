@@ -1,26 +1,31 @@
 package com.example.hethongquanly.service;
 
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.hethongquanly.model.BacLuong;
 import com.example.hethongquanly.model.ChiTietBacLuong;
 import com.example.hethongquanly.model.NhanVien;
 import com.example.hethongquanly.repository.BacLuongRepository;
 import com.example.hethongquanly.repository.ChiTietBacLuongRepository;
 import com.example.hethongquanly.repository.NhanVienRepository;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@RequiredArgsConstructor
 public class ChiTietBacLuongService {
+	@Autowired
+    private ChiTietBacLuongRepository chiTietBacLuongRepository;
+
     @Autowired
-    private final ChiTietBacLuongRepository chiTietBacLuongRepository;
-    private final BacLuongRepository bacLuongRepository;
-    private final NhanVienRepository nhanVienRepository;
+    private BacLuongRepository bacLuongRepository;
+
+    @Autowired
+    private NhanVienRepository nhanVienRepository;
 
 
     @Transactional
