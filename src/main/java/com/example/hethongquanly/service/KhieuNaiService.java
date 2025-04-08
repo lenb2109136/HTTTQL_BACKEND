@@ -1,16 +1,24 @@
 package com.example.hethongquanly.service;
+
 import com.example.hethongquanly.model.KhieuNai;
 import com.example.hethongquanly.model.NhanVien;
 import com.example.hethongquanly.repository.KhieuNaiRepository;
 import com.example.hethongquanly.repository.NhanVienRepository;
+
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -88,27 +96,27 @@ public class KhieuNaiService {
         }
 
         // Tạo nội dung HTML với lời chào cá nhân
-        String htmlBody = "<html>"
-                + "<body style='font-family: Arial, sans-serif; margin: 0; padding: 20px;'>"
-                + "<div style='text-align: center; margin-bottom: 20px;'>"
-                + "<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/1280px-Samsung_Logo.svg.png' alt='Samsung Logo' style='width: 150px; height: auto;' />"
-                + "<h2 style='color: #000; margin: 10px 0;'>Samsung Việt Nam</h2>"
-                + "</div>"
-                + "<p style='font-size: 16px; color: #333;'>Kính gửi Anh/Chị " + nhanVien.getNV_HOTEN() + ",</p>"
-                + "<p style='font-size: 16px; color: #333;'>Cảm ơn Anh/Chị đã gửi khiếu nại đến Công ty chúng tôi. Dưới đây là thông tin chi tiết về khiếu nại của Anh/Chị:</p>"
-                + "<ul style='font-size: 16px; color: #333;'>"
-                + "<li><strong>Ngày khiếu nại:</strong> " + formattedDate + "</li>"
-                + "<li><strong>Nội dung khiếu nại:</strong> " + khieuNai.getKn_NOIDUNG() + "</li>"
-                + "</ul>"
-                + "<p style='font-size: 16px; color: #333;'><strong>Phản hồi từ Công ty:</strong><br>" + responseContent + "</p>"
-                + "<p style='font-size: 16px; color: #333;'>Chúng tôi rất mong nhận được ý kiến đóng góp thêm từ Anh/Chị để cải thiện chất lượng dịch vụ. Mọi thắc mắc vui lòng liên hệ qua email này hoặc hotline: 1800-588-889.</p>"
-                + "<p style='font-size: 16px; color: #333; text-align: center; margin-top: 20px;'>Trân trọng,<br>Phòng Chăm Sóc Khách Hàng<br>Công ty Samsung Việt Nam<br>Email: support@samsung.com | Website: www.samsung.com/vn</p>"
-                + "</body>"
-                + "</html>";
+        String htmlBody = "<html>" +
+                "<body style='font-family: Arial, sans-serif; margin: 0; padding: 20px;'>" +
+                "<div style='text-align: center; margin-bottom: 20px;'>" +
+                "<img src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/1280px-Samsung_Logo.svg.png' alt='Samsung Logo' style='width: 150px; height: auto;' />" +
+                "<h2 style='color: #000; margin: 10px 0;'>Samsung Việt Nam</h2>" +
+                "</div>" +
+                "<p style='font-size: 16px; color: #333;'>Kính gửi Anh/Chị " + nhanVien.getNV_HOTEN() + ",</p>" +
+                "<p style='font-size: 16px; color: #333;'>Cảm ơn Anh/Chị đã gửi khiếu nại đến Công ty chúng tôi. Dưới đây là thông tin chi tiết về khiếu nại của Anh/Chị:</p>" +
+                "<ul style='font-size: 16px; color: #333;'>" +
+                "<li><strong>Ngày khiếu nại:</strong> " + formattedDate + "</li>" +
+                "<li><strong>Nội dung khiếu nại:</strong> " + khieuNai.getKn_NOIDUNG() + "</li>" +
+                "</ul>" +
+                "<p style='font-size: 16px; color: #333;'><strong>Phản hồi từ Công ty:</strong><br>" + responseContent + "</p>" +
+                "<p style='font-size: 16px; color: #333;'>Chúng tôi rất mong nhận được ý kiến đóng góp thêm từ Anh/Chị để cải thiện chất lượng dịch vụ. Mọi thắc mắc vui lòng liên hệ qua email này hoặc hotline: 1800-588-889.</p>" +
+                "<p style='font-size: 16px; color: #333; text-align: center; margin-top: 20px;'>Trân trọng,<br>Phòng Chăm Sóc Khách Hàng<br>Công ty Samsung Việt Nam<br>Email: support@samsung.com | Website: www.samsung.com/vn</p>" +
+                "</body>" +
+                "</html>";
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username)); // Sửa lỗi từ InternetException thành InternetAddress
+            message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject("Phản hồi thông tin khiếu nại của nhân viên - Samsung Việt Nam");
 
