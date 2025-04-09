@@ -2,13 +2,8 @@ package com.example.hethongquanly.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-
-import javax.mail.Session;
 
 import com.example.hethongquanly.model.NhanVien;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +19,6 @@ import com.itextpdf.text.pdf.*;
 
 @Service
 public class ExportPDF {
-
 
     private static Font customFont;
     private static Font customBoldFont;
@@ -46,7 +40,8 @@ public class ExportPDF {
 
         try {
             PdfWriter.getInstance(document, outputStream);
-            document.open();Paragraph title = new Paragraph("Phiếu Lương", customBoldFont);
+            document.open();
+            Paragraph title = new Paragraph("Phiếu Lương", customBoldFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(new Paragraph(" "));
@@ -145,7 +140,6 @@ public class ExportPDF {
         return outputStream.toByteArray();
     }
 
-
     private static PdfPCell createCell(String text, Font font) {
         return createCell(text, font, 1, Element.ALIGN_LEFT);
     }
@@ -161,4 +155,6 @@ public class ExportPDF {
 
 
 
+
 }
+

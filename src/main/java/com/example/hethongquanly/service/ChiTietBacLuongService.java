@@ -13,8 +13,10 @@ import com.example.hethongquanly.repository.BacLuongRepository;
 import com.example.hethongquanly.repository.ChiTietBacLuongRepository;
 import com.example.hethongquanly.repository.NhanVienRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class ChiTietBacLuongService {
@@ -27,7 +29,6 @@ public class ChiTietBacLuongService {
     @Autowired
     private NhanVienRepository nhanVienRepository;
 
-
     @Transactional
     public ChiTietBacLuong themChiTietBacLuong(int nhanVienId, int bacLuongId) {
         // Kiểm tra nhân viên tồn tại
@@ -38,11 +39,10 @@ public class ChiTietBacLuongService {
         BacLuong bacLuong = bacLuongRepository.findById(bacLuongId)
                 .orElseThrow(() -> new RuntimeException("Bậc lương không tồn tại với id: " + bacLuongId));
 
-        // Tạo mới chi tiết bậc lương
+        // Tạo mới chi tiết bậc lương (sử dụng INSERT để lưu lịch sử)
         ChiTietBacLuong chiTietBacLuong = new ChiTietBacLuong();
         chiTietBacLuong.setNV_ID(nhanVien);
         chiTietBacLuong.setBAC_ID(bacLuong);
-
         // Ngày áp dụng sẽ được tự động set bởi @PrePersist trong entity
 
         return chiTietBacLuongRepository.save(chiTietBacLuong);
@@ -51,15 +51,12 @@ public class ChiTietBacLuongService {
     public List<ChiTietBacLuong> getAll() {
         return chiTietBacLuongRepository.findAll();
     }
-    // Lấy chi tiết bậc lương của nhân viên theo NV_ID
-//    public List<ChiTietBacLuong> getChiTietBacLuongByNhanVienId(Integer nvId) {
-//        return chiTietBacLuongRepository.findByNhanVien_NV_ID(nvId);  // Đảm bảo gọi phương thức đúng
-//    }
+
     public List<ChiTietBacLuong> findByNhanVienId(int nhanVienId) {
         return chiTietBacLuongRepository.findByNhanVienId(nhanVienId);
     }
+
     public ChiTietBacLuong findLatestByNhanVienId(int nhanVienId) {
-        // Kiểm tra nhân viên tồn tại
         if (!nhanVienRepository.existsById(nhanVienId)) {
             throw new NoSuchElementException("Nhân viên không tồn tại với id: " + nhanVienId);
         }
@@ -67,6 +64,4 @@ public class ChiTietBacLuongService {
         return chiTietBacLuongRepository.findLatestByNhanVienId(nhanVienId)
                 .orElseThrow(() -> new NoSuchElementException("Nhân viên chưa có bậc lương nào"));
     }
-
-
 }
