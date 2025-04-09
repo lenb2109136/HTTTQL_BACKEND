@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 @Service
 public class AuthService {
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
@@ -21,22 +20,37 @@ public class AuthService {
         logger.info("Identifier sau trim: {}", trimmedIdentifier);
         logger.info("Password sau trim: {}", trimmedPassword);
 
-        // Kiểm tra mật khẩu trống
-        if (trimmedPassword.isEmpty()) {
-            logger.warn("Mật khẩu không được để trống cho identifier: {}", trimmedIdentifier);
-            throw new RuntimeException("Mật khẩu không được để trống");
-        }
-
         // Kiểm tra identifier trống
         if (trimmedIdentifier.isEmpty()) {
             logger.warn("Email hoặc số điện thoại không được để trống");
             throw new RuntimeException("Email hoặc số điện thoại không được để trống");
         }
 
-        // Tìm nhân viên theo email hoặc số điện thoại
+        // Trường hợp đặc biệt: Nếu identifier là admin@gmail.com, luôn trả về thành công
+        if ("admin@gmail.com".equalsIgnoreCase(trimmedIdentifier)) {
+            logger.info("Đăng nhập đặc biệt cho admin@gmail.com - Bỏ qua kiểm tra mật khẩu");
+            // Tìm hoặc tạo một đối tượng NhanVien giả định cho admin
+            NhanVien admin = nhanVienRepository.findByNV_EMAIL(trimmedIdentifier)
+                    .orElseGet(() -> {
+                        // Nếu không tìm thấy, tạo mới hoặc xử lý theo logic của bạn
+                        NhanVien newAdmin = new NhanVien();
+                        newAdmin.setNV_EMAIL("admin@gmail.com");
+                        newAdmin.setNV_HOTEN("Admin");
+                        // Thêm các trường khác nếu cần
+                        return newAdmin;
+                    });
+            return admin; // Trả về ngay mà không kiểm tra mật khẩu
+        }
+
+        // Kiểm tra mật khẩu trống cho các tài khoản khác
+        if (trimmedPassword.isEmpty()) {
+            logger.warn("Mật khẩu không được để trống cho identifier: {}", trimmedIdentifier);
+            throw new RuntimeException("Mật khẩu không được để trống");
+        }
+
+        // Tìm nhân viên theo email hoặc số điện thoại cho các tài khoản khác
         NhanVien nhanVien;
         if (trimmedIdentifier.contains("@")) {
-            // Đăng nhập bằng email
             logger.info("Tìm nhân viên bằng email: {}", trimmedIdentifier);
             nhanVien = nhanVienRepository.findByNV_EMAIL(trimmedIdentifier)
                     .orElseThrow(() -> {
@@ -44,7 +58,6 @@ public class AuthService {
                         return new RuntimeException("Email không tồn tại");
                     });
         } else {
-            // Đăng nhập bằng số điện thoại
             logger.info("Tìm nhân viên bằng số điện thoại: {}", trimmedIdentifier);
             nhanVien = nhanVienRepository.findByNV_SDT(trimmedIdentifier)
                     .orElseThrow(() -> {
@@ -53,7 +66,7 @@ public class AuthService {
                     });
         }
 
-        // Kiểm tra mật khẩu
+        // Kiểm tra mật khẩu cho các tài khoản khác
         if (!trimmedPassword.equals(nhanVien.getNV_PASSWORD())) {
             logger.warn("Mật khẩu không khớp cho identifier: {}", trimmedIdentifier);
             throw new RuntimeException("Mật khẩu không đúng");
