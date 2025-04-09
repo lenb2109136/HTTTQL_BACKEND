@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/ngach-luong")
@@ -15,8 +16,12 @@ public class NgachLuongController {
     private NgachLuongService ngachLuongService;
 
     @GetMapping
-    public List<NgachLuong> getAllNgachLuong() {
-        return ngachLuongService.getAllNgachLuong();
+    public List<NgachLuong> getAllNgachLuong(@RequestParam("ten") String ten) {
+        List<NgachLuong> ngachluong= ngachLuongService.getAllNgachLuong();
+        ngachluong=ngachluong.stream().filter((d)->{
+            return d.getTen().equals(ten);
+        }).collect(Collectors.toList());
+        return ngachluong;
     }
     @GetMapping("/latest")
     public List<NgachLuong> getAllNgachLuongLatest() {
@@ -31,6 +36,7 @@ public class NgachLuongController {
 
     @PostMapping
     public NgachLuong createNgachLuong(@RequestBody NgachLuong ngachLuong) {
+        ngachLuong.setId(null);
         return ngachLuongService.createNgachLuong(ngachLuong);
     }
 
@@ -45,4 +51,6 @@ public class NgachLuongController {
         ngachLuongService.deleteNgachLuong(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

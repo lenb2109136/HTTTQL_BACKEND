@@ -31,4 +31,46 @@ public class NgachLuong {
     @OneToMany(mappedBy = "ngachLuong", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<BacLuong> bacLuongs;
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Float getLuongCoSo() {
+		return luongCoSo;
+	}
+
+	public void setLuongCoSo(Float luongCoSo) {
+		this.luongCoSo = luongCoSo;
+	}
+
+	public String getTen() {
+		return ten;
+	}
+
+	public void setTen(String ten) {
+		this.ten = ten;
+	}
+
+	public Date getNgayApDung() {
+		return ngayApDung;
+	}
+
+	public void setNgayApDung(Date ngayApDung) {
+		this.ngayApDung = ngayApDung;
+	}
+
+	public List<BacLuong> getBacLuongs() {
+		return bacLuongs;
+	}
+
+	public void setBacLuongs(List<BacLuong> bacLuongs) {
+		this.bacLuongs = bacLuongs;
+	}
+	
+	
+
 }

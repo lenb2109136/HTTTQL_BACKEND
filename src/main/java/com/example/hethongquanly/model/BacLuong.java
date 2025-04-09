@@ -36,6 +36,66 @@ public class BacLuong {
 
 
 
+	public Integer getId() {
+		return id;
+	}
+
+
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+
+
+	public NgachLuong getNgachLuong() {
+		return ngachLuong;
+	}
+
+
+
+	public void setNgachLuong(NgachLuong ngachLuong) {
+		this.ngachLuong = ngachLuong;
+	}
+
+
+
+	public String getTen() {
+		return ten;
+	}
+
+
+
+	public void setTen(String ten) {
+		this.ten = ten;
+	}
+
+
+
+	public Float getHeSo() {
+		return heSo;
+	}
+
+
+
+	public void setHeSo(Float heSo) {
+		this.heSo = heSo;
+	}
+
+
+
+	public Date getNgayApDung() {
+		return ngayApDung;
+	}
+
+
+
+	public void setNgayApDung(Date ngayApDung) {
+		this.ngayApDung = ngayApDung;
+	}
+
+
+
 	@PrePersist
 	protected void onCreate() {
 		if (this.ngayApDung == null) {
