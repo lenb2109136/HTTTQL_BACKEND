@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -50,6 +51,15 @@ public class NgachLuongController {
     public ResponseEntity<Void> deleteNgachLuong(@PathVariable Integer id) {
         ngachLuongService.deleteNgachLuong(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/id")
+    public ResponseEntity<?> getNgachIdByTen(@RequestParam String ten) {
+        try {
+            Integer id = ngachLuongService.getNgachIdByTen(ten);
+            return ResponseEntity.ok(Map.of("ngachId", id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
 
