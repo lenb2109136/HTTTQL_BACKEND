@@ -23,8 +23,11 @@ public class NgachLuong {
 	@Column(name = "NGACH_TEN", nullable = false)
 	private String ten;
 
+//	@Column(name = "NGAY", nullable = false)
+//	@Temporal(TemporalType.DATE)
+//	private Date ngayApDung;
 	@Column(name = "NGAY", nullable = false)
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date ngayApDung;
 
 	@JsonIgnore

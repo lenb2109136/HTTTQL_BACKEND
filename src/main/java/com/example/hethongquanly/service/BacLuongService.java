@@ -25,6 +25,10 @@ public class BacLuongService {
     public List<BacLuong> getAllBacLuong() {
         return bacLuongRepository.findAll();
     }
+    public Integer getOldestNgachIdByTen(String ngachTen) {
+        return bacLuongRepository.findOldestNgachIdByNgachTen(ngachTen)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy ngạch lương với tên: " + ngachTen));
+    }
 
     public BacLuong addBacLuong(Integer ngachId, BacLuong bacLuong) {
         // Kiểm tra xem ngạch lương có tồn tại không
@@ -60,5 +64,9 @@ public class BacLuongService {
     }
     public List<BacLuong> getLatestBacLuongByNgachId(Integer ngachId) {
         return bacLuongRepository.findLatestBacLuongByNgachId(ngachId);
+    }
+
+    public List<BacLuong> getNewBacLuongByNgachId(String ngachTen) {
+        return bacLuongRepository.findNewBacLuongByNgachTen(ngachTen);
     }
 }

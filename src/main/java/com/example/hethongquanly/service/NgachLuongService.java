@@ -44,6 +44,11 @@ public class NgachLuongService {
         }
         return null;
     }
+    public Integer getNgachIdByTen(String ten) {
+        return ngachLuongRepository.findByTen(ten)
+                .map(NgachLuong::getId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy ngạch lương với tên: " + ten));
+    }
 
     public void deleteNgachLuong(Integer id) {
         ngachLuongRepository.deleteById(id);

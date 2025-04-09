@@ -40,6 +40,7 @@ public class BacLuongController {
 
     @PostMapping("/{ngachId}")
     public ResponseEntity<Map<String, Object>> addBacLuong(@PathVariable Integer ngachId, @RequestBody BacLuong bacLuong) {
+        bacLuong.setId(null);
         Map<String, Object> response = new HashMap<>();
         try {
             // Thêm bậc lương (ngay sẽ tự động được đặt)
@@ -51,6 +52,15 @@ public class BacLuongController {
         } catch (Exception e) {
             response.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(response);
+        }
+    }
+    @GetMapping("/ngach-id/oldest")
+    public ResponseEntity<?> getOldestNgachId(@RequestParam String ten) {
+        try {
+            Integer id = bacLuongService.getOldestNgachIdByTen(ten);
+            return ResponseEntity.ok(Map.of("ngachId", id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
     @GetMapping("/latest")
@@ -70,6 +80,12 @@ public class BacLuongController {
     @GetMapping("/ngach/{ngachId}/latest")
     public ResponseEntity<List<BacLuong>> getBacLuongByNgach(@PathVariable Integer ngachId) {
         List<BacLuong> result = bacLuongService.getLatestBacLuongByNgachId(ngachId);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/ngach/{ngachTen}/old")
+    public ResponseEntity<List<BacLuong>> getBacLuongByNgachold(@PathVariable String ngachTen) {
+        List<BacLuong> result = bacLuongService.getNewBacLuongByNgachId(ngachTen);
         return ResponseEntity.ok(result);
     }
     @PostMapping("/save")
