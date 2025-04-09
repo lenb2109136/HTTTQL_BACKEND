@@ -1,37 +1,79 @@
 package com.example.hethongquanly.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.Data;
+
+
+import java.util.Date;
+import java.util.List;
 
 @Entity
-@Table(name = "NGACH_LUONG")
+@Table(name = "ngach_luong")
+@Data
 public class NgachLuong {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int NGACH_ID  ;
-	private Float  NGACH_LUONGCOSO    ;
-	private String NGACH_TEN    ;
-	public int getNGACH_ID() {
-		return NGACH_ID;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "NGACH_ID")
+	private Integer id;
+
+	@Column(name = "NGACH_LUONGCOSO", nullable = false)
+	private Float luongCoSo;
+
+	@Column(name = "NGACH_TEN", nullable = false)
+	private String ten;
+
+//	@Column(name = "NGAY", nullable = false)
+//	@Temporal(TemporalType.DATE)
+//	private Date ngayApDung;
+	@Column(name = "NGAY", nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date ngayApDung;
+
+	@JsonIgnore
+    @OneToMany(mappedBy = "ngachLuong", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<BacLuong> bacLuongs;
+
+	public Integer getId() {
+		return id;
 	}
-	public void setNGACH_ID(int nGACH_ID) {
-		NGACH_ID = nGACH_ID;
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
-	public Float getNGACH_LUONGCOSO() {
-		return NGACH_LUONGCOSO;
+
+	public Float getLuongCoSo() {
+		return luongCoSo;
 	}
-	public void setNGACH_LUONGCOSO(Float nGACH_LUONGCOSO) {
-		NGACH_LUONGCOSO = nGACH_LUONGCOSO;
+
+	public void setLuongCoSo(Float luongCoSo) {
+		this.luongCoSo = luongCoSo;
 	}
-	public String getNGACH_TEN() {
-		return NGACH_TEN;
+
+	public String getTen() {
+		return ten;
 	}
-	public void setNGACH_TEN(String nGACH_TEN) {
-		NGACH_TEN = nGACH_TEN;
+
+	public void setTen(String ten) {
+		this.ten = ten;
+	}
+
+	public Date getNgayApDung() {
+		return ngayApDung;
+	}
+
+	public void setNgayApDung(Date ngayApDung) {
+		this.ngayApDung = ngayApDung;
+	}
+
+	public List<BacLuong> getBacLuongs() {
+		return bacLuongs;
+	}
+
+	public void setBacLuongs(List<BacLuong> bacLuongs) {
+		this.bacLuongs = bacLuongs;
 	}
 	
 	
+
 }

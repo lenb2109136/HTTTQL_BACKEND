@@ -1,79 +1,77 @@
 package com.example.hethongquanly.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 
-import com.example.hethongquanly.embeded.HeSoId;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
+import lombok.Data;
 @Table(name = "CHI_TIET_BAC_LUONG")
 @Entity
 public class ChiTietBacLuong {
-	@EmbeddedId
-	private com.example.hethongquanly.embeded.ChiTietBacLuong id;
+	@Id
+	@Column(name="ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int Id;
 	
 	@ManyToOne
-	@MapsId("BAC_ID")
 	@JoinColumn(name = "BAC_ID")
 	private BacLuong BAC_ID;
-	
-	@ManyToOne
-	@MapsId("NGACH_ID")
-	@JoinColumn(name = "NGACH_ID")
-	private NgachLuong NGACH_ID;
-	
-	
-	@ManyToOne
-	@MapsId("NV_ID")
-	@JoinColumn(name = "NV_ID")
-	private NhanVien NV_ID;
-	
-	private LocalDate NGAYAPDUNG ;
 
-	public com.example.hethongquanly.embeded.ChiTietBacLuong getId() {
-		return id;
+	@ManyToOne
+	@JoinColumn(name = "NV_ID")
+	private NhanVien nhanVien;
+	
+//	private LocalDate NGAYAPDUNG ;
+
+	@Column(name = "NGAYAPDUNG", nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date ngayApDung;
+
+	public int getId() {
+		return Id;
 	}
 
-	public void setId(com.example.hethongquanly.embeded.ChiTietBacLuong id) {
-		this.id = id;
+	public void setId(int id) {
+		Id = id;
 	}
 
 	public BacLuong getBAC_ID() {
 		return BAC_ID;
 	}
 
-	public void setBAC_ID(BacLuong bAC_ID) {
-		BAC_ID = bAC_ID;
-	}
-
-	public NgachLuong getNGACH_ID() {
-		return NGACH_ID;
-	}
-
-	public void setNGACH_ID(NgachLuong nGACH_ID) {
-		NGACH_ID = nGACH_ID;
+	public void setBAC_ID(BacLuong BAC_ID) {
+		this.BAC_ID = BAC_ID;
 	}
 
 	public NhanVien getNV_ID() {
-		return NV_ID;
+		return nhanVien;
 	}
 
-	public void setNV_ID(NhanVien nV_ID) {
-		NV_ID = nV_ID;
+	public void setNV_ID(NhanVien NV_ID) {
+		this.nhanVien = NV_ID;
 	}
 
-	public LocalDate getNGAYAPDUNG() {
-		return NGAYAPDUNG;
+	public Date getNgayApDung() {
+		return ngayApDung;
 	}
 
-	public void setNGAYAPDUNG(LocalDate nGAYAPDUNG) {
-		NGAYAPDUNG = nGAYAPDUNG;
+	public void setNgayApDung(Date ngayApDung) {
+		this.ngayApDung = ngayApDung;
 	}
-	
+
+	@PrePersist
+	protected void onCreate() {
+		if (this.ngayApDung == null) {
+			// Lấy ngày giờ hiện tại với múi giờ UTC+7
+			LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.of("+07:00"));
+			// Chuyển thành Date
+			this.ngayApDung = Date.from(localDateTime.atZone(ZoneOffset.of("+07:00")).toInstant());
+		}
+	}
+
+
 	
 }

@@ -1,17 +1,23 @@
 package com.example.hethongquanly.repository;
 
+import com.example.hethongquanly.model.UngLuong;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
+public interface UngLuongRepository extends JpaRepository<UngLuong, Integer> {
+    @Modifying
+    @Query("DELETE FROM UngLuong u WHERE u.NV_ID = :nvId")
+    void deleteByNvId(@Param("nvId") int nvId);
 
-import com.example.hethongquanly.model.UngLuong;
+    @Query("SELECT u FROM UngLuong u WHERE u.NV_ID = :nvId AND u.UL_NGAYUL >= :startDate AND u.UL_NGAYUL <= :endDate AND u.UL_TRANGTHAI = 'Đã duyệt'")
+    List<UngLuong> getUngLuong(@Param("nvId") int nvId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-@Repository
-public interface UngLuongRepository extends JpaRepository<UngLuong, Integer>{
-	@Query(value = "SELECT * FROM ung_luong WHERE NV_ID=:nvid AND UL_NGAYUL>=:nbd AND UL_NGAYUL<=:nkt AND UL_TRANGTHAI='Đã duyệt';",nativeQuery = true)
-	public List<UngLuong> getUngLuong(@RequestParam("nvid") int nvid, @RequestParam("nbd") LocalDate nbd, @RequestParam("nkt") LocalDate nkt);
+    // Thay thế findByUL_NGAYULBetween bằng @Query
+    @Query("SELECT u FROM UngLuong u WHERE u.UL_NGAYUL BETWEEN :startDate AND :endDate")
+    List<UngLuong> findByDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

@@ -2,23 +2,23 @@ package com.example.hethongquanly.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.mail.Session;
-
+import com.example.hethongquanly.model.NhanVien;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import com.example.hethongquanly.model.NhanVien;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 
 @Service
 public class ExportPDF {
-
 
     private static Font customFont;
     private static Font customBoldFont;
@@ -40,12 +40,16 @@ public class ExportPDF {
 
         try {
             PdfWriter.getInstance(document, outputStream);
-            document.open();Paragraph title = new Paragraph("Phiếu Lương", customBoldFont);
+            document.open();
+            Paragraph title = new Paragraph("Phiếu Lương", customBoldFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
             document.add(new Paragraph(" "));
 
-            Map<String, Object> thongTinNhanVien = (Map<String, Object>) data.get("thongtinnhanvien");
+            Map<String, Object> nvMap = (Map<String, Object>) data.get("thongtinnhanvien");
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            NhanVien nv = mapper.convertValue(nvMap, NhanVien.class);
             Double luongCoBan = (data.get("luongcoban") != null) ? Double.valueOf(data.get("luongcoban").toString()) : 0.0;
             Double luongTangCa = (data.get("luongtangca") != null) ? Double.valueOf(data.get("luongtangca").toString()) : 0.0;
             Double tongKhauTru = (data.get("tongkhautru") != null) ? Double.valueOf(data.get("tongkhautru").toString()) : 0.0;
@@ -58,13 +62,14 @@ public class ExportPDF {
             table.setWidthPercentage(100);
             table.addCell(createCell("Thông tin nhân viên", customBoldFont, 2, Element.ALIGN_CENTER));
             table.addCell(createCell("Tên nhân viên", customFont));
-            table.addCell(createCell((String) thongTinNhanVien.get("nv_HOTEN"), customFont));
+            table.addCell(createCell((String) nv.getNV_HOTEN(), customFont));
             table.addCell(createCell("Số điện thoại", customFont));
-            table.addCell(createCell((String) thongTinNhanVien.get("nv_SDT"), customFont));
+            table.addCell(createCell((String) nv.getNV_SDT(), customFont));
             table.addCell(createCell("Giới tính", customFont));
-            table.addCell(createCell(((boolean) thongTinNhanVien.get("nv_GIOITINH")) ? "Nam" : "Nữ", customFont));
+//            table.addCell(createCell((nv.getNV_GIOITINH() ? "Nam" : "Nữ", customFont));
+//            table.addCell(createCell((nv.getNV_GIOITINH()==1 ? "Nam" : "Nữ", customFont)));
             table.addCell(createCell("Email", customFont));
-            table.addCell(createCell((String) thongTinNhanVien.get("nv_EMAIL"), customFont));
+            table.addCell(createCell((String) nv.getNV_EMAIL(), customFont));
 
             document.add(table);
             document.add(new Paragraph(" "));
@@ -135,7 +140,6 @@ public class ExportPDF {
         return outputStream.toByteArray();
     }
 
-
     private static PdfPCell createCell(String text, Font font) {
         return createCell(text, font, 1, Element.ALIGN_LEFT);
     }
@@ -147,8 +151,10 @@ public class ExportPDF {
         cell.setBorder(PdfPCell.BOX);
         return cell;
     }
-    
 
 
-   
+
+
+
 }
+

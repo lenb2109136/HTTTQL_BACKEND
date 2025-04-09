@@ -62,6 +62,13 @@ public class KhauTruController {
 		return new ResponseEntity<Response>(new Response(HttpStatus.OK, "Tạo khấu trừ thành công", null),
 				HttpStatus.OK);
 	}
+	
+	@PostMapping("/update")
+	public ResponseEntity<Response> Update(@RequestBody KhauTru khauTru) {
+		khauTruRepository.save(khauTru);
+		return new ResponseEntity<Response>(new Response(HttpStatus.OK, "Tạo khấu trừ thành công", null),
+				HttpStatus.OK);
+	}
 
 	@PostMapping("thietlapkhautru")
 	public ResponseEntity<Response> thietlapkhautru(@RequestBody String requestBody) {
@@ -74,9 +81,8 @@ public class KhauTruController {
 			Map<Object, Object> me = (Map<Object, Object>) dataMap.get("khautru");
 			KhauTru k= khauTruRepository.findById((Integer)me.get("kt_ID")).orElseThrow(()-> new EntityNotFoundException());
 			nhanvien.forEach(nb->{
-				NhanVien nv= nhanVienRepository.findById((Integer)nb.get("nv_ID")).orElseThrow(()-> new EntityNotFoundException());
+				NhanVien nv= nhanVienRepository.findById((Integer)nb.get("NV_ID")).orElseThrow(()-> new EntityNotFoundException());
 				ChiTietKhauTru kk= new ChiTietKhauTru();
-				
 				kk.setCHI_TIET_KY_NGAYAPDUNG(LocalDate.now());
 				kk.setKhauTru(k);
 				kk.setNhanVien(nv);
@@ -90,14 +96,6 @@ public class KhauTruController {
 		}
 		
 	}
-	
-	@PostMapping("/update")
-	public ResponseEntity<Response> update(@RequestBody KhauTru khauTru){
-		khauTruRepository.save(khauTru);
-		return new ResponseEntity<Response>(new Response(HttpStatus.OK, "Tạo khấu trừ thành công",null), HttpStatus.OK);
-		
-	}
-	
 	@GetMapping("/thongke")
 	public ResponseEntity<Response> update(@RequestParam("nbd") LocalDateTime nbd,@RequestParam("nkt") LocalDateTime nkt){
 		

@@ -1,5 +1,11 @@
 package com.example.hethongquanly.service;
 
+
+import com.example.hethongquanly.model.*;
+import com.example.hethongquanly.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -8,39 +14,68 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.hethongquanly.embeded.HeSoId;
-import com.example.hethongquanly.model.ChiTietBacLuong;
-import com.example.hethongquanly.model.ChiTietKhauTru;
-import com.example.hethongquanly.model.HeSo;
-import com.example.hethongquanly.model.NhanVien;
-import com.example.hethongquanly.model.UngLuong;
-import com.example.hethongquanly.repository.ChhiTietBacLuongRepository;
-import com.example.hethongquanly.repository.ChiTietKhauTruRepository;
-import com.example.hethongquanly.repository.HeSoRepository;
-import com.example.hethongquanly.repository.NhanVienRepository;
-import com.example.hethongquanly.repository.UngLuongRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.util.List;
+
 @Service
 public class NhanVienService {
+
+    private static final Logger logger = LoggerFactory.getLogger(NhanVienService.class);
+
 		@Autowired
 		private UngLuongRepository ungLuongRepository;
+
+			@Autowired
+			private ChiTietBacLuongService chiTietBacLuongService;
+
 		@Autowired
 		private ChiTietKhauTruRepository chiTietKhauTruRepository;
 		@Autowired
-		private ChhiTietBacLuongRepository chhiTietBacLuongRepository;
-		@Autowired
-		private HeSoRepository heSoRepository;
-		
+		private ChiTietBacLuongRepository chhiTietBacLuongRepository;
+
 		@Autowired
 		private NhanVienRepository nhanVienRepository;
 		
+		@Autowired
+//		private ChiTietBacLuongService chiTietBacLuongService;
+
+
+//		public Map<Object, Object> TinhLuong(int idnv, LocalDate nbd, LocalDate nkt) {
+//			Map<Object, Object> map= new HashMap<Object, Object>();
+//			List<UngLuong> ul= ungLuongRepository.getUngLuong(idnv, nbd, nkt);
+//			long songay = ChronoUnit.DAYS.between(nbd, nkt) + 1;
+//			List<ChiTietKhauTru> ctkt=chiTietKhauTruRepository.getChiTietKhauTru(idnv, nbd, nkt);
+//			ChiTietBacLuong latest = chiTietBacLuongService.findLatestByNhanVienId(idnv);
+//			Float tongungluong=ul.stream().map((u)-> u.getUL_TIEN()).reduce(0f,Float::sum);
+//			Float luongcoban=latest.getBAC_ID().getHeSo()* latest.getBAC_ID().getNgachLuong().getLuongCoSo();
+//			luongcoban=(float)(luongcoban/26)*songay;
+//			Float tongkhautru=ctkt.stream().map((u)-> u.getKhauTru().getKT_SOTIEN()).reduce(0f,Float::sum);
+//			map.put("luongcoban",luongcoban);
+//			map.put("luongtangca", getRandomTangCa());
+//			map.put("tongthunhap", getRandomTangCa()+luongcoban);
+//			map.put("tongungluong", tongungluong);
+//			map.put("tongkhautru", tongkhautru);
+//			map.put("luongnhan",
+//					getRandomTangCa()+luongcoban-tongkhautru-tongungluong
+//			);
+//			map.put("danhsachkhautru", ctkt.stream().map((d)->{
+//				Map<Object, Object> khautru=new HashMap<Object, Object>();
+//				khautru.put("khautru", d.getKhauTru());
+//				khautru.put("tienung", d.getCHI_TIET_KY_NGAYAPDUNG());
+//				return khautru;
+//			}));
+//			map.put("danhsachbacluong",null);
+//			map.put("danhsachungluong",ul);
+//			map.put("luongnhan",3000);
+//			return map;
+//		}
 		public static long getNumberOfDays(LocalDate startDate, LocalDate endDate) {
 	        return ChronoUnit.DAYS.between(startDate, endDate) + 1;
 	    }
@@ -49,31 +84,34 @@ public class NhanVienService {
 		    return values[ThreadLocalRandom.current().nextInt(values.length)];
 		}
 		public Map<Object, Object> TinhLuong(int idnv, LocalDate nbd, LocalDate nkt) {
-			Map<Object, Object> map= new HashMap<Object, Object>();
-			List<UngLuong> ul= ungLuongRepository.getUngLuong(idnv, nbd, nkt);
-			List<ChiTietKhauTru> ctkt=chiTietKhauTruRepository.getChiTietKhauTru(idnv, nbd, nkt);
-			List<ChiTietBacLuong> ctbl= chhiTietBacLuongRepository.getChiTietBacLuong(idnv, nbd, nkt);
+			long songay = ChronoUnit.DAYS.between(nbd, nkt) + 1;
+				Map<Object, Object> map= new HashMap<Object, Object>();
+				List<UngLuong> ul= ungLuongRepository.getUngLuong(idnv, nbd, nkt);
+				List<ChiTietKhauTru> ctkt=chiTietKhauTruRepository.getChiTietKhauTru(idnv, nbd, nkt);
+			ChiTietBacLuong latest = chiTietBacLuongService.findLatestByNhanVienId(idnv);
 			Float tongungluong=ul.stream().map((u)-> u.getUL_TIEN()).reduce(0f,Float::sum);
+			Float luongcoban=latest.getBAC_ID().getHeSo()* latest.getBAC_ID().getNgachLuong().getLuongCoSo();
+			luongcoban=(float)(luongcoban/26)*songay;
 			Float tongkhautru=ctkt.stream().map((u)-> u.getKhauTru().getKT_SOTIEN()).reduce(0f,Float::sum);
-			map.put("luongcoban",20000);
+			map.put("luongcoban",luongcoban);
 			map.put("luongtangca", getRandomTangCa());
-			map.put("tongthunhap", getRandomTangCa());
+			map.put("tongthunhap", getRandomTangCa()+luongcoban);
 			map.put("tongungluong", tongungluong);
 			map.put("tongkhautru", tongkhautru);
-			map.put("luongnhan", tongkhautru);
-			map.put("danhsachkhautru", ctkt.stream().map((d)->{
-				Map<Object, Object> khautru=new HashMap<Object, Object>();
-				khautru.put("khautru", d.getKhauTru());
-				khautru.put("tienung", d.getCHI_TIET_KY_NGAYAPDUNG());
-				return khautru;
-			}));
-			map.put("danhsachbacluong",null);
-			map.put("danhsachungluong",ul);
-			map.put("luongnhan",3000);
-			return map;
-		}
-		
-		
+
+				map.put("danhsachkhautru", ctkt.stream().map((d)->{
+					Map<Object, Object> khautru=new HashMap<Object, Object>();
+					khautru.put("khautru", d.getKhauTru());
+					khautru.put("tienung", d.getCHI_TIET_KY_NGAYAPDUNG());
+					return khautru;
+				}));
+				map.put("danhsachbacluong",null);
+				map.put("danhsachungluong",ul);
+				map.put("luongnhan",getRandomTangCa()+luongcoban-tongkhautru-tongungluong);
+				return map;
+			}
+
+
 		public List<NhanVien> filterNhanVien(int idPhongBan){
 			List<NhanVien> nhanvien=nhanVienRepository.findAll();
 			if(idPhongBan!=0) {
@@ -85,7 +123,7 @@ public class NhanVienService {
 				return nhanvien;
 			}
 		}
-		
+
 		public List<Map<Object, Object>> getLuongByBoPhan(int idphongban, LocalDate ngaybd, LocalDate ngaykt) {
 		    if (ngaybd == null) {
 		        ngaybd = LocalDate.now().withDayOfMonth(1);
@@ -115,4 +153,97 @@ public class NhanVienService {
 		}
 
 
+
+
+
+    @Autowired
+    private PhongBanRepository phongBanRepository;
+
+    public List<NhanVien> getAllNhanVien() {
+        return nhanVienRepository.findAll();
+    }
+
+    public NhanVien getNhanVienById(int id) {
+        return nhanVienRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nhân viên không tồn tại với ID: " + id));
+    }
+
+    public NhanVien createNhanVien(NhanVien nhanVien) {
+        logger.info("Dữ liệu nhân viên nhận được: {}", nhanVien);
+        if (nhanVien.getPbIdTemp() != null) {
+            PhongBan phongBan = phongBanRepository.findById(nhanVien.getPbIdTemp())
+                .orElseThrow(() -> new RuntimeException("Phòng ban không tồn tại với ID: " + nhanVien.getPbIdTemp()));
+            nhanVien.setPB_ID(phongBan);
+        } else {
+            throw new RuntimeException("Phòng ban là bắt buộc");
+        }
+        return nhanVienRepository.save(nhanVien);
+    }
+
+    public NhanVien changePassword(int id, String oldPassword, String newPassword) {
+        NhanVien nhanVien = nhanVienRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Nhân viên không tồn tại với ID: " + id));
+
+        if (!nhanVien.getNV_PASSWORD().equals(oldPassword)) {
+            throw new RuntimeException("Mật khẩu cũ không đúng");
+        }
+
+        nhanVien.setNV_PASSWORD(newPassword);
+        return nhanVienRepository.save(nhanVien);
+    }
+
+    public NhanVien updateNhanVien(int id, NhanVien nhanVienDetails) {
+        logger.info("Dữ liệu nhân viên cập nhật nhận được: {}", nhanVienDetails);
+        NhanVien nhanVien = nhanVienRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Nhân viên không tồn tại với ID: " + id));
+
+        // Chỉ cập nhật các trường không null từ nhanVienDetails
+        if (nhanVienDetails.getNV_HOTEN() != null) {
+            nhanVien.setNV_HOTEN(nhanVienDetails.getNV_HOTEN());
+        }
+        if (nhanVienDetails.getNV_NGAYSINH() != null) {
+            nhanVien.setNV_NGAYSINH(nhanVienDetails.getNV_NGAYSINH());
+        }
+        if (nhanVienDetails.getNV_GIOITINH() != null) {
+            nhanVien.setNV_GIOITINH(nhanVienDetails.getNV_GIOITINH());
+        }
+        if (nhanVienDetails.getNV_EMAIL() != null) {
+            nhanVien.setNV_EMAIL(nhanVienDetails.getNV_EMAIL());
+        }
+        if (nhanVienDetails.getNV_SDT() != null) {
+            nhanVien.setNV_SDT(nhanVienDetails.getNV_SDT());
+        }
+        if (nhanVienDetails.getNV_USERNAME() != null) {
+            nhanVien.setNV_USERNAME(nhanVienDetails.getNV_USERNAME());
+        }
+        if (nhanVienDetails.getNV_PASSWORD() != null) {
+            nhanVien.setNV_PASSWORD(nhanVienDetails.getNV_PASSWORD());
+        }
+        if (nhanVienDetails.getNV_DIACHI() != null) {
+            nhanVien.setNV_DIACHI(nhanVienDetails.getNV_DIACHI());
+        }
+        if (nhanVienDetails.getPbIdTemp() != null) {
+            PhongBan phongBan = phongBanRepository.findById(nhanVienDetails.getPbIdTemp())
+                .orElseThrow(() -> new RuntimeException("Phòng ban không tồn tại với ID: " + nhanVienDetails.getPbIdTemp()));
+            nhanVien.setPB_ID(phongBan);
+        }
+
+        return nhanVienRepository.save(nhanVien);
+    }
+
+    public void deleteNhanVien(int id) {
+        NhanVien nhanVien = nhanVienRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Nhân viên không tồn tại với ID: " + id));
+        nhanVienRepository.delete(nhanVien);
+    }
+    
+    
+    
+    
+    
+    
+    // MỚI BỔ SUNG THÊM
+    public void getHeSoLuong() {
+    	
+    }
 }

@@ -1,0 +1,65 @@
+package com.example.hethongquanly.service;
+
+import com.example.hethongquanly.model.NhanVien;
+import com.example.hethongquanly.repository.NhanVienRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
+    @Autowired
+    private NhanVienRepository nhanVienRepository;
+
+    public NhanVien login(String identifier, String password) {
+        logger.info("Đăng nhập với identifier: {}", identifier);
+        String trimmedIdentifier = identifier != null ? identifier.trim() : "";
+        String trimmedPassword = password != null ? password.trim() : "";
+        logger.info("Identifier sau trim: {}", trimmedIdentifier);
+        logger.info("Password sau trim: {}", trimmedPassword);
+
+        // Kiểm tra mật khẩu trống
+        if (trimmedPassword.isEmpty()) {
+            logger.warn("Mật khẩu không được để trống cho identifier: {}", trimmedIdentifier);
+            throw new RuntimeException("Mật khẩu không được để trống");
+        }
+
+        // Kiểm tra identifier trống
+        if (trimmedIdentifier.isEmpty()) {
+            logger.warn("Email hoặc số điện thoại không được để trống");
+            throw new RuntimeException("Email hoặc số điện thoại không được để trống");
+        }
+
+        // Tìm nhân viên theo email hoặc số điện thoại
+        NhanVien nhanVien;
+        if (trimmedIdentifier.contains("@")) {
+            // Đăng nhập bằng email
+            logger.info("Tìm nhân viên bằng email: {}", trimmedIdentifier);
+            nhanVien = nhanVienRepository.findByNV_EMAIL(trimmedIdentifier)
+                    .orElseThrow(() -> {
+                        logger.warn("Không tìm thấy nhân viên với email: {}", trimmedIdentifier);
+                        return new RuntimeException("Email không tồn tại");
+                    });
+        } else {
+            // Đăng nhập bằng số điện thoại
+            logger.info("Tìm nhân viên bằng số điện thoại: {}", trimmedIdentifier);
+            nhanVien = nhanVienRepository.findByNV_SDT(trimmedIdentifier)
+                    .orElseThrow(() -> {
+                        logger.warn("Không tìm thấy nhân viên với số điện thoại: {}", trimmedIdentifier);
+                        return new RuntimeException("Số điện thoại không tồn tại");
+                    });
+        }
+
+        // Kiểm tra mật khẩu
+        if (!trimmedPassword.equals(nhanVien.getNV_PASSWORD())) {
+            logger.warn("Mật khẩu không khớp cho identifier: {}", trimmedIdentifier);
+            throw new RuntimeException("Mật khẩu không đúng");
+        }
+
+        logger.info("Đăng nhập thành công cho nhân viên: {}", nhanVien.getNV_HOTEN());
+        return nhanVien;
+    }
+}
