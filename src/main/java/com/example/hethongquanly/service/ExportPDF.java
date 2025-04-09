@@ -2,7 +2,9 @@ package com.example.hethongquanly.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.example.hethongquanly.model.NhanVien;
@@ -22,6 +24,21 @@ public class ExportPDF {
 
     private static Font customFont;
     private static Font customBoldFont;
+    public static Double parseDoubleSafe(Object value) {
+        if (value == null) return 0.0;
+        try {
+            String s = value.toString().replace(",", "").replaceAll("[^0-9.\\-]", "");
+            int countDots = s.length() - s.replace(".", "").length();
+            if (countDots > 1) {
+                // Trường hợp có nhiều dấu chấm, giữ dấu chấm cuối cùng làm dấu thập phân
+                int lastDot = s.lastIndexOf(".");
+                s = s.substring(0, lastDot).replace(".", "") + s.substring(lastDot);
+            }
+            return Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            return 0.0; // hoặc log lỗi nếu cần
+        }
+    }
 
     static {
         try {
@@ -31,6 +48,22 @@ public class ExportPDF {
             customBoldFont = FontFactory.getFont("customFont", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 12, Font.BOLD);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static String formatCurrencyVND(double amount) {
+        NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+        return formatter.format(amount) + " VNĐ"; // hoặc dùng "₫" nếu thích
+    }
+    public static String formatCurrencyVND(Object amountObj) {
+        if (amountObj == null) return "0 VNĐ";
+        try {
+            double amount = Double.parseDouble(amountObj.toString());
+            NumberFormat formatter = NumberFormat.getInstance(new Locale("vi", "VN"));
+            formatter.setMaximumFractionDigits(0); // nếu bạn muốn bỏ phần thập phân
+            return formatter.format(amount) + " VNĐ";
+        } catch (NumberFormatException e) {
+            return "0 VNĐ";
         }
     }
 
@@ -50,10 +83,11 @@ public class ExportPDF {
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             NhanVien nv = mapper.convertValue(nvMap, NhanVien.class);
-            Double luongCoBan = (data.get("luongcoban") != null) ? Double.valueOf(data.get("luongcoban").toString()) : 0.0;
-            Double luongTangCa = (data.get("luongtangca") != null) ? Double.valueOf(data.get("luongtangca").toString()) : 0.0;
-            Double tongKhauTru = (data.get("tongkhautru") != null) ? Double.valueOf(data.get("tongkhautru").toString()) : 0.0;
-            Double luongNhan = (data.get("luongnhan") != null) ? Double.valueOf(data.get("luongnhan").toString()) : 0.0;
+            Double luongCoBan = parseDoubleSafe(data.get("luongcoban"));
+            Double luongTangCa = parseDoubleSafe(data.get("luongtangca"));
+            Double tongKhauTru = parseDoubleSafe(data.get("tongkhautru"));
+            Double luongNhan = parseDoubleSafe(data.get("luongnhan"));
+
 
             List<Map<String, Object>> danhSachKhauTru = (List<Map<String, Object>>) data.get("danhsachkhautru");
             List<Map<String, Object>> danhSachUngLuong = (List<Map<String, Object>>) data.get("danhsachungluong");
@@ -78,13 +112,21 @@ public class ExportPDF {
             salaryTable.setWidthPercentage(100);
             salaryTable.addCell(createCell("Thông tin lương", customBoldFont, 2, Element.ALIGN_CENTER));
             salaryTable.addCell(createCell("Lương cơ bản", customFont));
-            salaryTable.addCell(createCell(String.valueOf(luongCoBan), customFont));
+            salaryTable.addCell(createCell("Lương cơ bản", customFont));
+            salaryTable.addCell(createCell("Lương cơ bản", customFont));
+            salaryTable.addCell(createCell(formatCurrencyVND(luongCoBan), customFont));
+
             salaryTable.addCell(createCell("Lương tăng ca", customFont));
-            salaryTable.addCell(createCell(String.valueOf(luongTangCa), customFont));
+            salaryTable.addCell(createCell(formatCurrencyVND(luongTangCa), customFont));
+
             salaryTable.addCell(createCell("Tổng khấu trừ", customFont));
-            salaryTable.addCell(createCell(String.valueOf(tongKhauTru), customFont));
+            salaryTable.addCell(createCell(formatCurrencyVND(tongKhauTru), customFont));
+
             salaryTable.addCell(createCell("Lương thực nhận", customBoldFont));
-            salaryTable.addCell(createCell(String.valueOf(luongNhan), customBoldFont));
+            salaryTable.addCell(createCell(formatCurrencyVND(luongNhan), customBoldFont));
+
+
+
 
             document.add(salaryTable);
             document.add(new Paragraph(" "));
@@ -104,8 +146,9 @@ public class ExportPDF {
                 for (Map<String, Object> khauTru : danhSachKhauTru) {
                     Map<String, Object> khauTruInfo = (Map<String, Object>) khauTru.get("khautru");
                     deductionTable.addCell(createCell((String) khauTruInfo.get("kt_DIENGIAI"), customFont));
-                    deductionTable.addCell(createCell((String) khauTru.get("tienung"), customFont));
-                    deductionTable.addCell(createCell(String.valueOf(khauTruInfo.get("kt_SOTIEN")), customFont));
+                    deductionTable.addCell(createCell(String.valueOf(khauTru.get("tienung")), customFont));
+
+                    deductionTable.addCell(createCell(formatCurrencyVND(khauTruInfo.get("kt_SOTIEN")), customFont));
                 }
 
                 document.add(deductionTable);
