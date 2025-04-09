@@ -133,15 +133,35 @@ public class NhanVienController {
 		return new ResponseEntity<Response>(new Response(HttpStatus.OK,"",nhanVienService.TinhLuong(nvid, nbd, nkt)),HttpStatus.OK);
 
 	}
-	@GetMapping("getluongnhanvienbybophan")
-	public ResponseEntity<Response> getluongnhanvienByBoPhan(
-			@RequestParam(name="nvid",required = false,defaultValue ="0") int bophanid,
-			@RequestParam(name="nbd",required = false) LocalDate nbd,
-			@RequestParam(name="nkt",required = false) LocalDate nkt
-			){
-		return new ResponseEntity<Response>(new Response(HttpStatus.OK,"",nhanVienService.getLuongByBoPhan(bophanid, nbd, nkt)),HttpStatus.OK);
+    @GetMapping("getluongnhanvienbybophan")
+    public ResponseEntity<Response> getluongnhanvienByBoPhan(
+            @RequestParam(name = "nvid", required = false, defaultValue = "0") int bophanid,
+            @RequestParam(name = "nbd", required = false) LocalDate nbd,
+            @RequestParam(name = "nkt", required = false) LocalDate nkt,
+            @RequestParam(name = "thang", required = false) Integer thang,
+            @RequestParam(name = "nam", required = false) Integer nam
+    ) {
+        LocalDate ngayBatDau = nbd;
+        LocalDate ngayKetThuc = nkt;
 
-	}
+        if (thang != null && nam != null) {
+            ngayBatDau = LocalDate.of(nam, thang, 1);
+            LocalDate now = LocalDate.now();
+            if (nam == now.getYear() && thang == now.getMonthValue()) {
+                ngayKetThuc = now;
+            } else {
+                ngayKetThuc = ngayBatDau.withDayOfMonth(ngayBatDau.lengthOfMonth());
+            }
+        }
+        System.out.println("ngày bắt đầu: "+ngayBatDau);
+        System.out.println("ngày kết thúc: "+ngayKetThuc);
+
+        return new ResponseEntity<>(
+                new Response(HttpStatus.OK, "", nhanVienService.getLuongByBoPhan(bophanid, ngayBatDau, ngayKetThuc)),
+                HttpStatus.OK
+        );
+    }
+
 
 	@GetMapping("/getPhongBanSoDienThoai")
 	public ResponseEntity<Response> getPhongBanSoDienThoai(

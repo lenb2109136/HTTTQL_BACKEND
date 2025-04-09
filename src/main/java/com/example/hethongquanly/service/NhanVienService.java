@@ -6,11 +6,13 @@ import com.example.hethongquanly.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -80,40 +82,53 @@ public class NhanVienService {
 	        return ChronoUnit.DAYS.between(startDate, endDate) + 1;
 	    }
 		private int getRandomTangCa() {
-		    int[] values = {0, 1500, 2000};
+		    int[] values = {0, 1500000, 2000000};
 		    return values[ThreadLocalRandom.current().nextInt(values.length)];
 		}
 		public Map<Object, Object> TinhLuong(int idnv, LocalDate nbd, LocalDate nkt) {
-			long songay = ChronoUnit.DAYS.between(nbd, nkt) + 1;
-				Map<Object, Object> map= new HashMap<Object, Object>();
-				List<UngLuong> ul= ungLuongRepository.getUngLuong(idnv, nbd, nkt);
-				List<ChiTietKhauTru> ctkt=chiTietKhauTruRepository.getChiTietKhauTru(idnv, nbd, nkt);
-			ChiTietBacLuong latest = chiTietBacLuongService.findLatestByNhanVienId(idnv);
-			Float tongungluong=ul.stream().map((u)-> u.getUL_TIEN()).reduce(0f,Float::sum);
-			Float luongcoban=latest.getBAC_ID().getHeSo()* latest.getBAC_ID().getNgachLuong().getLuongCoSo();
-			luongcoban=(float)(luongcoban/26)*songay;
-			Float tongkhautru=ctkt.stream().map((u)-> u.getKhauTru().getKT_SOTIEN()).reduce(0f,Float::sum);
-			map.put("luongcoban",luongcoban);
-			map.put("luongtangca", getRandomTangCa());
-			map.put("tongthunhap", getRandomTangCa()+luongcoban);
-			map.put("tongungluong", tongungluong);
-			map.put("tongkhautru", tongkhautru);
+		    long songay = ChronoUnit.DAYS.between(nbd, nkt) + 1;
+		    Map<Object, Object> map = new HashMap<>();
+		    
+		    List<UngLuong> ul = ungLuongRepository.getUngLuong(idnv, nbd, nkt);
+		    List<ChiTietKhauTru> ctkt = chiTietKhauTruRepository.getChiTietKhauTru(idnv, nbd, nkt);
+		    ChiTietBacLuong latest = chiTietBacLuongService.findLatestByNhanVienId(idnv);
 
-				map.put("danhsachkhautru", ctkt.stream().map((d)->{
-					Map<Object, Object> khautru=new HashMap<Object, Object>();
-					khautru.put("khautru", d.getKhauTru());
-					khautru.put("tienung", d.getCHI_TIET_KY_NGAYAPDUNG());
-					return khautru;
-				}));
-				map.put("danhsachbacluong",null);
-				map.put("danhsachungluong",ul);
-				map.put("luongnhan",getRandomTangCa()+luongcoban-tongkhautru-tongungluong);
-				return map;
-			}
+		    Float tongungluong = ul.stream().map(UngLuong::getUL_TIEN).reduce(0f, Float::sum);
+		    Float luongcoban = latest.getBAC_ID().getHeSo() * latest.getBAC_ID().getNgachLuong().getLuongCoSo();
+		    luongcoban = (luongcoban / 26) * songay;
+
+		    Float tongkhautru = ctkt.stream().map(u -> u.getKhauTru().getKT_SOTIEN()).reduce(0f, Float::sum);
+		    int luongtangca = getRandomTangCa();
+		    Float tongthunhap = luongcoban + luongtangca;
+		    Float luongnhan = tongthunhap - tongkhautru - tongungluong;
+
+		    // Định dạng tiền tệ VN
+		    NumberFormat currencyVN = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+		    map.put("luongcoban", currencyVN.format(luongcoban));
+		    map.put("luongtangca", currencyVN.format(luongtangca));
+		    map.put("tongthunhap", currencyVN.format(tongthunhap));
+		    map.put("tongungluong", currencyVN.format(tongungluong));
+		    map.put("tongkhautru", currencyVN.format(tongkhautru));
+		    map.put("luongnhan", currencyVN.format(luongnhan));
+
+		    map.put("danhsachkhautru", ctkt.stream().map(d -> {
+		        Map<Object, Object> khautru = new HashMap<>();
+		        khautru.put("khautru", d.getKhauTru());
+		        khautru.put("tienung", d.getCHI_TIET_KY_NGAYAPDUNG());
+		        return khautru;
+		    }).toList());
+
+		    map.put("danhsachbacluong", null);
+		    map.put("danhsachungluong", ul);
+
+		    return map;
+		}
 
 
 		public List<NhanVien> filterNhanVien(int idPhongBan){
 			List<NhanVien> nhanvien=nhanVienRepository.findAll();
+//			System.out.println("tổng ");
 			if(idPhongBan!=0) {
 				return nhanvien.stream().filter((d)->{
 					return d.getPB_ID().getPB_ID()==idPhongBan;

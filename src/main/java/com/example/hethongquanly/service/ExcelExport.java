@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ExcelExport {
+	
     public static byte[] exportToExcel(List<Map<Object, Object>> dataList) {
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Danh sách nhân viên");
@@ -42,7 +43,10 @@ public class ExcelExport {
                 row.createCell(4).setCellValue(getDoubleValue(item.get("tongkhautru"))); 
                 row.createCell(5).setCellValue(getDoubleValue(item.get("tongthunhap"))); 
                 row.createCell(6).setCellValue(getDoubleValue(item.get("tongungluong"))); 
-                row.createCell(7).setCellValue(getDoubleValue(item.get("luongnhan"))); 
+                row.createCell(7).setCellValue(getDoubleValue(item.get("luongnhan")));
+
+
+
                 
                 // Debug log
                 System.out.println("Ghi dữ liệu nhân viên: " + hoTen);
@@ -62,12 +66,21 @@ public class ExcelExport {
         }
     }
     
-    private static double getDoubleValue(Object obj) {
-        if (obj == null) return 0.0;
+    public static double getDoubleValue(Object obj) {
+        if (obj == null) return 0;
         try {
-            return Double.parseDouble(obj.toString());
-        } catch (NumberFormatException e) {
-            return 0.0;
+            String str = obj.toString()
+                            .replace("₫", "")
+                            .replace(" ", "")       // khoảng trắng đặc biệt
+                            .replace(".", "")       // bỏ dấu chấm ngăn cách hàng nghìn
+                            .replace(",", ".")      // chuyển dấu phẩy (nếu có) sang dấu chấm thập phân
+                            .trim();
+            return Double.parseDouble(str);
+        } catch (Exception e) {
+            return 0;
         }
     }
+
+
+
 }
